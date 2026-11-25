@@ -1,0 +1,17 @@
+# Jekyll for GitHub Pages (optional — for local preview)
+source "https://rubygems.org"
+
+# Required on Ruby 3.4+ where these were removed from default gems
+gem "base64"       # safe_yaml
+gem "bigdecimal"   # liquid
+gem "csv"          # jekyll
+
+gem "jekyll", "~> 3.9"
+gem "jekyll-theme-minimal"
+gem "jekyll-theme-slate"
+gem "jekyll-relative-links"
+gem "jekyll-optional-front-matter"
+gem "kramdown-parser-gfm"
+
+gem "just-the-docs"
+gem "minima"

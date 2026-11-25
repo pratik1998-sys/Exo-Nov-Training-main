@@ -1,0 +1,43 @@
+---
+description: Use feature, plugin, middleware, and plugin-registry skills when the user asks to create a feature, plugin, middleware, or plugin registry
+alwaysApply: true
+---
+
+# Feature and plugin creation
+
+When the user's prompt indicates they want to **create** a feature and/or a plugin, use the corresponding skill(s) from **`core/agent/skills/`**:
+
+- **Feature requested** → `core/agent/skills/features/SKILL.md` (and linked docs in that directory)
+- **Plugin requested** → `core/agent/skills/plugins/SKILL.md` (and linked docs in that directory)
+- **Middleware requested** → `core/agent/skills/middleware/SKILL.md`
+- **Plugin registry requested** → `core/agent/skills/plugin-registry/SKILL.md`
+- **Extension / app-plugin rules** → `core/agent/skills/extension/SKILL.md`
+- **Both feature and plugin** → Use both feature and plugin skills by **launching two parallel agents** (e.g. via the task/agent tool): one agent for the feature/extension skill, one for the plugin skill. Do not assign both to a single agent.
+
+Do not implement a new feature or plugin from scratch without reading and applying the relevant skill(s) first.
+
+When creating a **plugin feature** with a REST or GraphQL datasource, the Plugin skill requires that the **first response** to the user asks for the API source (and, after that, for operation selection). Do not implement schema or datasource code until the user has provided the source and selected operations.
+
+## Default directory for new components
+
+When creating **new features in an existing plugin** or **new features of an existing feature group**, always create new components in **`src/core-staging`** by default, **even if** the existing plugin or feature group lives in **`./core-modules`**. Do **not** use `./core-modules` just because the rest of the plugin is there or so that existing imports resolve; keep the default location and fix paths or imports separately. Use **`./core-modules`** or **`src/apps/$appId`** only when the user **explicitly** states to create there.
+
+## Never edit core-modules to extend existing features
+
+When the task is to **extend**, **enrich**, or **customize** an existing feature or plugin that lives in **`core-modules/`** (new GraphQL fields, filter args, resolver/controller behavior, service impl overrides), **do not modify `core-modules/`**. That is read-only for extension work.
+
+**Use instead:**
+
+| Change type | Location |
+|-------------|----------|
+| Feature extension (new fields, filter args, resolver/controller) | **`src/apps/$appId/features/$featureId/`** (same filenames as core; `Ext*` types) |
+| Plugin service/mapper/datasource override | **`src/apps/$appId/plugins/$pluginId/features/$featureId/`** (extends base `*ServiceImpl`; class name ends with `ServiceImpl`) |
+| New cross-cutting feature or plugin (not an override of core-modules) | **`src/core-staging/`** by default |
+
+**Check:** Before editing any file, confirm the path. If it starts with `core-modules/` and the user did not **explicitly** say to edit core-modules, stop and implement under `src/apps/$appId/` or `src/core-staging/` per the Extension skill.
+
+## Shop/workshop context via `x-shop` header (not GraphQL args)
+
+When non-core behavior depends on the active shop/workshop (e.g. inventory enrichment on products), pass **`x-shop`** on HTTP/GraphQL requests. Read it in app middleware into **`requestContext.shopId`**, and consume it in app plugin extensions. Do **not** add `workshopId` / `shopId` to core GraphQL query/mutation signatures or core filter inputs for this purpose.
+
+**Location gate:** Before creating any new plugin/feature file, confirm the path does not start with `core-modules/` unless the user explicitly asked for core-modules. If the rest of the plugin is in core-modules or existing code imports from it, still use `src/core-staging` or `src/apps/$appId` and fix paths separately.

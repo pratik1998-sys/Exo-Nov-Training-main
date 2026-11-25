@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Values.organization }}-{{  .Chart.Name }}-service-proxy"
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: "{{  .Chart.Name }}-service.{{ .Values.organization }}.svc.cluster.local"

@@ -1,0 +1,16 @@
+{% comment %}
+  Load Mermaid and init from external JS so the theme's HTML compression layout
+  does not mangle inline script content (which caused "Unexpected end of input").
+{% endcomment %}
+{% if site.mermaid.version %}
+  {% assign mermaid_major_version = site.mermaid.version | split: "." | first | plus: 0 %}
+{% else %}
+  {% assign mermaid_major_version = 9 %}
+{% endif %}
+
+{% if site.mermaid.path %}
+  <script src="{{ site.mermaid.path | relative_url }}"></script>
+{% else %}
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@{{ site.mermaid.version | default: '10.6.1' }}/dist/mermaid.min.js"></script>
+{% endif %}
+<script src="{{ '/assets/js/mermaid-init.js' | relative_url }}"></script>

@@ -1,0 +1,42 @@
+#Add to src/apps/$app_id/configuration.yaml, and assign to the commerce features
+plugins:
+  hcl-commerce: &plugin_hcl-commerce
+    id: hcl-commerce
+    globalConfiguration:
+      topCategoriesDepth: 2
+      consumers:
+        -
+          id: $store_id
+          consumerId: *exo-consumer-1
+          locale: *locale-en-us
+          rootCategory: $root_category_slug
+          catalogId: $catalog_id
+    features:
+      - id: category
+        name: Category
+        description: Category feature for HCL Commerce
+        enabled: true
+        module: HCLCommerceCategoryModule
+        service: HCLCommerceCategoryServiceImpl
+      - id: ec-authentication
+        name: EC Authentication
+        description: Authentication feature for HCL Commerce
+        enabled: true
+        module: HCLCommerceECAuthenticationModule
+        service: HCLCommerceECAuthenticationServiceImpl
+        datasource: HCLCommerceCategoryDatasource
+        mapper: HCLCommerceCategoryMapper
+      - id: shopping-list
+        name: Shopping list
+        description: Wishlist / shopping list feature for HCL Commerce (Transaction REST)
+        enabled: true
+        module: HCLCommerceShoppingListModule
+        service: HCLCommerceShoppingListServiceImpl
+        datasource: HCLCommerceShoppingListDatasource
+        mapper: HCLCommerceShoppingListMapper
+      - id: portfolio
+        name: Portfolio
+        description: Generic portfolio (e.g. precious metals holdings) — implementation in core-staging
+        enabled: true
+        module: HCLCommercePortfolioModule
+        service: HCLCommercePortfolioServiceImpl

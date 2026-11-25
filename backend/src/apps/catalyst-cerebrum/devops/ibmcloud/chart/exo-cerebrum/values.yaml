@@ -1,0 +1,41 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+organization: ibm-catalyst
+appName: catalyst-cerebrum
+configSuffix: ""
+replicaCount: 1
+revisionHistoryLimit: 1
+port: 3000
+adminPort: 4000
+runAsUser: 10000
+runAsGroup: 10000
+runAsNonRoot: true
+image:
+  tag: v1.0.0
+  pullPolicy: Always
+  resources:
+    requests:
+      cpu: 200m
+      memory: 300Mi
+  nodeEnv: dev
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+hpa:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    cpu:
+      targetAverageUtilization: 70
+    memory:
+      targetAverageUtilization: 70
+base:
+  enabled: false
+  replicaCount: 1
+  image:
+    tag: v0.9.9
+  weight: 100
+istio:
+  enabled: false
+  weight: 100

@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-authenticate": [
+            "core-modules/features/authenticate"
+        ],
+        "@feature-authenticate/*": [
+            "core-modules/features/authenticate/*"
+        ]
+    }
+}

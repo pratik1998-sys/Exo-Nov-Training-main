@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@plugin-tutorial-pet-rest": [
+            "core-modules/plugins/tutorial-pet-rest"
+        ],
+        "@plugin-tutorial-pet-rest/*": [
+            "core-modules/plugins/tutorial-pet-rest/*"
+        ]
+    }
+}

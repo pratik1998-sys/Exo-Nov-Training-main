@@ -1,0 +1,70 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "../",
+    "outDir": "../dist",
+    "paths": {
+      "@admin-features": ["core/features/admin"],
+      "@admin-features/*": ["core/features/admin/*"],
+      "@api-decorators": ["core/foundation/api/shared/decorators"],
+      "@api-decorators/*": ["core/foundation/api/shared/decorators/*"],
+      "@api-graphql": ["core/foundation/api/graphql"],
+      "@api-graphql/*": ["core/foundation/api/graphql/*"],
+      "@api-headers": ["core/foundation/api/shared/headers"],
+      "@api-headers/*": ["core/foundation/api/shared/headers/*"],
+      "@api-parameters": ["core/foundation/api/shared/parameters"],
+      "@api-parameters/*": ["core/foundation/api/shared/parameters/*"],
+      "@api-utilities": ["core/foundation/api/shared/utilities"],
+      "@api-utilities/*": ["core/foundation/api/shared/utilities/*"],
+      "@api": ["core/foundation/api"],
+      "@api/*": ["core/foundation/api/*"],
+      "@application": ["core/foundation/application"],
+      "@application/*": ["core/foundation/application/*"],
+      "@configuration": ["core/foundation/configuration"],
+      "@configuration/*": ["core/foundation/configuration/*"],
+      "@context": ["core/foundation/context"],
+      "@context/*": ["core/foundation/context/*"],
+      "@datastore": ["core/foundation/datastore"],
+      "@datastore/*": ["core/foundation/datastore/*"],
+      "@error": ["core/foundation/error"],
+      "@error/*": ["core/foundation/error/*"],
+      "@feature": ["core/foundation/feature"],
+      "@feature/*": ["core/foundation/feature/*"],
+      "@guards": ["core/guards"],
+      "@guards/*": ["core/guards/*"],
+      "@logger": ["core/foundation/logger"],
+      "@logger/*": ["core/foundation/logger/*"],
+      "@messenger": ["core/foundation/messenger"],
+      "@messenger/*": ["core/foundation/messenger/*"],
+      "@middleware-foundation": ["core/foundation/middleware"],
+      "@middleware-foundation/*": ["core/foundation/middleware/*"],
+      "@middleware": ["core/middleware"],
+      "@middleware/*": ["core/middleware/*"],
+      "@module": ["core/foundation/module"],
+      "@module/*": ["core/foundation/module/*"],
+      "@plugin-datasource-graphql": [
+        "core/foundation/plugin/datasource/api/graphql"
+      ],
+      "@plugin-datasource-graphql/*": [
+        "core/foundation/plugin/datasource/api/graphql/*"
+      ],
+      "@plugin-datasource-rest": ["core/foundation/plugin/datasource/api/rest"],
+      "@plugin-datasource-rest/*": [
+        "core/foundation/plugin/datasource/api/rest/*"
+      ],
+      "@plugin": ["core/foundation/plugin"],
+      "@plugin/*": ["core/foundation/plugin/*"],
+      "@registry": ["core/foundation/registry"],
+      "@registry/*": ["core/foundation/registry/*"],
+      "@server": ["core/foundation/server"],
+      "@server/*": ["core/foundation/server/*"],
+      "@token": ["core/foundation/token"],
+      "@token/*": ["core/foundation/token/*"],
+      "@utilities": ["core/foundation/utilities"],
+      "@utilities/*": ["core/foundation/utilities/*"],
+      "@health": ["core/features/health"],
+      "@health/*": ["core/features/health/*"],
+      "@apps/*": ["src/apps/*"]
+    }
+  }
+}

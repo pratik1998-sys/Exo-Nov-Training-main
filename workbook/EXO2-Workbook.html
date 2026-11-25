@@ -1,0 +1,1340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EXO 2 — Engineering Workbook</title>
+<style>
+:root{
+  --bg:#151C36; --panel:#1E2761; --card:#2A3573; --card2:#333E80;
+  --ink:#FFFFFF; --dim:#CADCFC; --mute:#8FA3D4; --mint:#00A896; --gold:#F2C55C;
+  --line:#3A4585; --code:#0F1530;
+}
+html[data-theme="light"]{
+  --bg:#F4F6FB; --panel:#FFFFFF; --card:#EEF2FA; --card2:#E3EAF7;
+  --ink:#141C3A; --dim:#39456F; --mute:#68769E; --mint:#00786F; --gold:#8A6A12;
+  --line:#CFD9EE; --code:#EAEFF9;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Segoe UI",Calibri,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+code,pre,.mono{font-family:"Cascadia Mono",Consolas,"Courier New",monospace}
+
+/* ---------- shell ---------- */
+#deck{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth}
+#deck::-webkit-scrollbar{width:0}
+.panel{
+  min-height:100vh;scroll-snap-align:start;scroll-snap-stop:always;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:4vh 4vw 4.5vh calc(272px + 3vw);
+  border-bottom:1px solid transparent;
+}
+@media(max-width:1100px){
+  .panel{padding-left:5vw}
+  #rail{transform:translateX(-272px)}
+  #rail.show{transform:none}
+  #toggle{display:block}
+}
+
+/* ---------- sidebar ---------- */
+#rail{
+  position:fixed;left:0;top:0;bottom:0;width:272px;z-index:40;
+  background:var(--panel);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;transition:transform .2s ease;
+}
+#rail.hide{transform:translateX(-272px)}
+.rail-head{padding:22px 22px 14px}
+.rail-head b{display:block;font-size:17px;letter-spacing:.2px}
+.rail-head span{display:block;font-size:11px;color:var(--mint);letter-spacing:2px;font-weight:700;margin-bottom:6px}
+#nav{flex:1;overflow-y:auto;padding:4px 12px 12px}
+#nav a{
+  display:flex;gap:10px;align-items:baseline;padding:8px 10px;margin-bottom:2px;
+  border-radius:6px;color:var(--dim);text-decoration:none;font-size:13px;line-height:1.35;
+}
+#nav a .n{font-size:10px;color:var(--mute);min-width:14px;font-weight:700}
+#nav a:hover{background:var(--card)}
+#nav a.on{background:var(--mint);color:#0B1020;font-weight:600}
+#nav a.on .n{color:#0B1020}
+.rail-foot{padding:12px 22px 18px;font-size:11px;color:var(--mute);border-top:1px solid var(--line);line-height:1.7}
+.rail-foot kbd{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:10px;color:var(--dim)}
+#bar{position:fixed;left:0;right:0;top:0;height:3px;background:var(--mint);width:0;z-index:60;transition:width .18s}
+#toggle{
+  position:fixed;left:12px;top:12px;z-index:50;background:var(--card);color:var(--dim);
+  border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer;display:none;
+}
+#rail.hide + #toggle{display:block}
+
+/* ---------- type ---------- */
+.eyebrow{font-size:clamp(10px,.72vw,12px);letter-spacing:2.6px;font-weight:700;color:var(--mint);margin-bottom:12px}
+h1{font-size:clamp(30px,3.5vw,54px);line-height:1.05;margin:0 0 18px;font-weight:700;letter-spacing:-.5px}
+h2{font-size:clamp(24px,2.4vw,38px);line-height:1.12;margin:0 0 14px;font-weight:700;letter-spacing:-.3px}
+h3{font-size:clamp(15px,1.15vw,19px);margin:0 0 6px;font-weight:700}
+p{font-size:clamp(13px,1vw,16px);line-height:1.62;color:var(--dim);margin:0 0 12px;max-width:82ch}
+.lead{font-size:clamp(15px,1.25vw,20px);line-height:1.55;color:var(--dim);max-width:74ch}
+.small{font-size:clamp(11px,.82vw,13.5px);line-height:1.55;color:var(--mute)}
+strong{color:var(--ink)}
+em.k{color:var(--mint);font-style:normal;font-weight:700}
+.gold{color:var(--gold)}
+
+/* ---------- bits ---------- */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1000px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--card);border-radius:10px;padding:14px 17px}
+.card h3{color:var(--ink)}
+.card p{margin:0;font-size:clamp(11.5px,.84vw,14px)}
+.pill{display:inline-block;background:var(--card2);color:var(--dim);border-radius:99px;padding:3px 11px;font-size:11.5px;margin:0 6px 6px 0}
+.pill.mint{background:var(--mint);color:#0B1020;font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:clamp(11px,.84vw,14px)}
+th{text-align:left;color:var(--mint);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;padding:0 12px 9px 0;font-weight:700}
+td{padding:6px 12px 6px 0;border-top:1px solid var(--line);color:var(--dim);vertical-align:top;line-height:1.5}
+td.f{color:var(--ink);font-weight:600}
+tr.hi td{color:var(--ink)}
+.path{font-family:"Cascadia Mono",Consolas,monospace;font-size:.92em;color:var(--gold);word-break:break-all}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:11px 14px;overflow-x:auto;
+    font-size:clamp(10.5px,.78vw,13px);line-height:1.6;color:var(--dim);margin:0}
+pre .c{color:var(--mute)}
+pre .m{color:var(--mint)}
+pre .g{color:var(--gold)}
+ul{margin:0 0 12px;padding-left:20px}
+li{font-size:clamp(12px,.9vw,15px);line-height:1.55;color:var(--dim);margin-bottom:5px}
+.fit{width:100%}
+.two{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:start}
+@media(max-width:1000px){.two{grid-template-columns:1fr}}
+
+/* ---------- expandable file rows ---------- */
+.fx{background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:5px}
+.fx[open]{background:var(--card2);border-color:var(--mint)}
+.fx summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:22px 1fr auto;
+  gap:11px;align-items:center;padding:6px 13px}
+.fx summary::-webkit-details-marker{display:none}
+.fx summary:hover .fn{color:var(--ink)}
+.fx .n{width:22px;height:22px;border-radius:50%;background:var(--card2);color:var(--dim);
+  display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700}
+.fx[open] .n{background:var(--mint);color:#0B1020}
+.fx .fn{font-family:"Cascadia Mono",Consolas,monospace;font-size:clamp(11px,.8vw,13px);
+  color:var(--gold);font-weight:600;margin-right:8px}
+.fx .ro{font-size:clamp(10.5px,.76vw,12.5px);color:var(--mute)}
+.fx .tag{font-size:9.5px;letter-spacing:1.2px;font-weight:700;color:var(--mint);
+  border:1px solid var(--line);border-radius:99px;padding:2px 8px;white-space:nowrap}
+.fx .b{padding:2px 14px 12px 46px;max-height:300px;overflow:auto}
+.fx .b pre{margin-bottom:8px}
+.fx .b .ex{font-size:clamp(10.5px,.78vw,12.5px);color:var(--dim);margin:0;max-width:none}
+.fx .b .ex b{color:var(--mint);font-weight:600}
+
+/* ---------- trace ---------- */
+.trace{display:flex;flex-direction:column;gap:5px}
+.step{display:grid;grid-template-columns:26px 1fr;gap:12px;align-items:start}
+.step .dot{width:26px;height:26px;border-radius:50%;background:var(--card2);color:var(--dim);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:2px}
+.step.key .dot{background:var(--mint);color:#0B1020}
+.step .body{background:var(--card);border-radius:8px;padding:7px 12px}
+.step.key .body{background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--mint)}
+.step .t{font-size:clamp(12px,.92vw,15px);font-weight:700;color:var(--ink);margin-bottom:2px}
+.step .p{font-size:clamp(10.5px,.76vw,12.5px);color:var(--gold);font-family:"Cascadia Mono",Consolas,monospace;word-break:break-all}
+.step .d{font-size:clamp(10.5px,.78vw,13px);color:var(--mute);margin-top:3px;line-height:1.5}
+.side{background:var(--card);border-radius:10px;padding:15px 18px;border:1px dashed var(--line)}
+.warn{border-left:3px solid var(--gold);background:var(--card);border-radius:0 8px 8px 0;padding:13px 17px}
+.warn h3{color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<aside id="rail">
+  <div class="rail-head"><span>EXO 2</span><b>Engineering Workbook</b></div>
+  <nav id="nav"></nav>
+  <div class="rail-foot">
+    <kbd>←</kbd><kbd>→</kbd> move · <kbd>1</kbd>–<kbd>9</kbd> jump<br>
+    <kbd>t</kbd> light/dark · <kbd>s</kbd> hide rail
+  </div>
+</aside>
+<button id="toggle">☰</button>
+
+<main id="deck">
+
+<!-- 1 ------------------------------------------------------------------ -->
+<section class="panel" data-nav="Cover">
+  <div class="eyebrow">IBM EXPERIENCE ORCHESTRATOR · PLATFORM TRAINING 2026</div>
+  <h1>EXO 2 — Engineering Workbook</h1>
+  <p class="lead">Fifteen sessions, thirty hours. The goal is not that you can write a resolver — Bob writes resolvers.
+  The goal is that you can <em class="k">find</em> the file a change belongs in, <em class="k">trace</em> a request end to end,
+  and <em class="k">judge</em> whether what Bob just generated is on-pattern or not.</p>
+  <div class="grid g3" style="margin-top:26px;max-width:1150px">
+    <div class="card"><h3>Purpose</h3><p>Why the framework is this rigid, and what that rigidity buys you.</p></div>
+    <div class="card"><h3>Navigation</h3><p>The folder structure and the eight files every feature is made of.</p></div>
+    <div class="card"><h3>Delegation</h3><p>How a request travels API → resolver → feature → plugin → datasource → mapper.</p></div>
+  </div>
+  <p class="small" style="margin-top:26px">Use the arrow keys. Each panel is one screen — nothing scrolls out from under you mid-explanation.</p>
+</section>
+
+<!-- 2 ------------------------------------------------------------------ -->
+<!-- 2 ------------------------------------------------------------------ -->
+<section class="panel" data-nav="Architecture">
+  <div class="eyebrow">THE SHAPE OF IT</div>
+  <h2>One endpoint in, many providers out</h2>
+  <p class="small" style="margin-bottom:10px">Everything below the gold line is replaceable. Everything above it is the contract your clients depend on.</p>
+
+  <svg viewBox="0 0 1180 452" style="width:100%;max-width:1250px;height:auto" role="img" aria-label="EXO 2 architecture: clients call one BFF endpoint; features declare contracts, configuration.yaml binds them to plugins, plugins reach providers">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--mint)"/>
+      </marker>
+      <marker id="arm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--mute)"/>
+      </marker>
+    </defs>
+
+    <!-- CLIENTS -->
+    <rect x="6" y="150" width="150" height="128" rx="9" fill="var(--card)" stroke="var(--line)"/>
+    <text x="81" y="181" text-anchor="middle" fill="var(--ink)" font-size="14" font-weight="700" font-family="Segoe UI,sans-serif">Clients</text>
+    <text x="81" y="207" text-anchor="middle" fill="var(--dim)" font-size="12.5" font-family="Segoe UI,sans-serif">Web console</text>
+    <text x="81" y="228" text-anchor="middle" fill="var(--dim)" font-size="12.5" font-family="Segoe UI,sans-serif">Mobile app</text>
+    <text x="81" y="252" text-anchor="middle" fill="var(--mute)" font-size="11" font-family="Segoe UI,sans-serif">know one URL</text>
+    <line x1="160" y1="214" x2="200" y2="214" stroke="var(--mint)" stroke-width="2" marker-end="url(#ar)"/>
+
+    <!-- BFF CONTAINER -->
+    <rect x="208" y="18" width="700" height="416" rx="11" fill="none" stroke="var(--mint)" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="228" y="42" fill="var(--mint)" font-size="11.5" font-weight="700" letter-spacing="2" font-family="Segoe UI,sans-serif">EXO 2 — THE BFF</text>
+
+    <!-- API surface -->
+    <rect x="230" y="56" width="656" height="44" rx="7" fill="var(--card)" stroke="var(--line)"/>
+    <text x="246" y="83" fill="var(--ink)" font-size="13.5" font-weight="600" font-family="Segoe UI,sans-serif">API surface</text>
+    <text x="870" y="83" text-anchor="end" fill="var(--gold)" font-size="12" font-family="Cascadia Mono,Consolas,monospace">/graphql · /swagger</text>
+
+    <!-- middleware + guard -->
+    <rect x="230" y="108" width="322" height="42" rx="7" fill="var(--card)" stroke="var(--line)"/>
+    <text x="246" y="134" fill="var(--dim)" font-size="12.5" font-family="Segoe UI,sans-serif">Middleware → RequestContext</text>
+    <rect x="564" y="108" width="322" height="42" rx="7" fill="var(--card)" stroke="var(--line)"/>
+    <text x="580" y="134" fill="var(--dim)" font-size="12.5" font-family="Segoe UI,sans-serif">AuthorizationGuard (APP_GUARD)</text>
+
+    <!-- FEATURES -->
+    <rect x="230" y="164" width="656" height="66" rx="7" fill="var(--card2)" stroke="var(--mint)" stroke-width="1.5"/>
+    <text x="246" y="189" fill="var(--mint)" font-size="13.5" font-weight="700" font-family="Segoe UI,sans-serif">FEATURES — the contract</text>
+    <text x="246" y="212" fill="var(--dim)" font-size="12" font-family="Cascadia Mono,Consolas,monospace">resolver · abstract service · model · parameters · error</text>
+    <text x="870" y="212" text-anchor="end" fill="var(--mute)" font-size="11" font-family="Segoe UI,sans-serif">names no provider</text>
+
+    <!-- THE SEAM -->
+    <rect x="230" y="242" width="656" height="46" rx="7" fill="var(--card)" stroke="var(--gold)" stroke-width="2"/>
+    <text x="246" y="262" fill="var(--gold)" font-size="13" font-weight="700" font-family="Cascadia Mono,Consolas,monospace">configuration.yaml</text>
+    <text x="246" y="280" fill="var(--dim)" font-size="11.5" font-family="Segoe UI,sans-serif">binds each feature to a plugin, per consumer — the seam</text>
+    <text x="870" y="271" text-anchor="end" fill="var(--gold)" font-size="12" font-family="Cascadia Mono,Consolas,monospace">*shopify</text>
+
+    <!-- PLUGINS -->
+    <rect x="230" y="300" width="656" height="66" rx="7" fill="var(--card2)" stroke="var(--mint)" stroke-width="1.5"/>
+    <text x="246" y="325" fill="var(--mint)" font-size="13.5" font-weight="700" font-family="Segoe UI,sans-serif">PLUGINS — the implementation</text>
+    <text x="246" y="348" fill="var(--dim)" font-size="12" font-family="Cascadia Mono,Consolas,monospace">service impl · datasource · mapper</text>
+    <text x="870" y="348" text-anchor="end" fill="var(--mute)" font-size="11" font-family="Segoe UI,sans-serif">all vendor knowledge</text>
+
+    <!-- I/O row -->
+    <rect x="230" y="378" width="656" height="40" rx="7" fill="var(--card)" stroke="var(--line)"/>
+    <text x="246" y="403" fill="var(--dim)" font-size="12.5" font-family="Segoe UI,sans-serif">Datasource performs I/O · Mapper renames vendor fields to yours</text>
+
+    <!-- vertical flow arrows -->
+    <line x1="558" y1="100" x2="558" y2="106" stroke="var(--mute)" stroke-width="1.5"/>
+    <line x1="558" y1="150" x2="558" y2="160" stroke="var(--mint)" stroke-width="2" marker-end="url(#ar)"/>
+    <line x1="558" y1="230" x2="558" y2="238" stroke="var(--gold)" stroke-width="2"/>
+    <line x1="558" y1="288" x2="558" y2="296" stroke="var(--mint)" stroke-width="2" marker-end="url(#ar)"/>
+    <line x1="558" y1="366" x2="558" y2="374" stroke="var(--mute)" stroke-width="1.5"/>
+
+    <!-- PROVIDERS -->
+    <line x1="890" y1="398" x2="944" y2="398" stroke="var(--mint)" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="1074" y="42" text-anchor="middle" fill="var(--mute)" font-size="11.5" font-weight="700" letter-spacing="2" font-family="Segoe UI,sans-serif">PROVIDERS</text>
+
+    <rect x="950" y="300" width="224" height="52" rx="8" fill="var(--card)" stroke="var(--mint)"/>
+    <text x="966" y="323" fill="var(--ink)" font-size="13" font-weight="600" font-family="Segoe UI,sans-serif">Shopify</text>
+    <text x="966" y="341" fill="var(--mute)" font-size="11" font-family="Segoe UI,sans-serif">product · blog — over HTTP</text>
+
+    <rect x="950" y="362" width="224" height="52" rx="8" fill="var(--card)" stroke="var(--line)" stroke-dasharray="4 3"/>
+    <text x="966" y="385" fill="var(--dim)" font-size="13" font-weight="600" font-family="Segoe UI,sans-serif">Postgres</text>
+    <text x="966" y="403" fill="var(--mute)" font-size="11" font-family="Segoe UI,sans-serif">feedback — via TypeORM</text>
+
+    <rect x="950" y="238" width="224" height="52" rx="8" fill="none" stroke="var(--line)" stroke-dasharray="4 3"/>
+    <text x="966" y="261" fill="var(--mute)" font-size="13" font-family="Segoe UI,sans-serif">any other system</text>
+    <text x="966" y="279" fill="var(--mute)" font-size="11" font-family="Segoe UI,sans-serif">CMS, ERP, search…</text>
+
+    <text x="1062" y="188" text-anchor="middle" fill="var(--gold)" font-size="11.5" font-family="Segoe UI,sans-serif">swap here</text>
+    <text x="1062" y="206" text-anchor="middle" fill="var(--mute)" font-size="11.5" font-family="Segoe UI,sans-serif">clients never notice</text>
+  </svg>
+</section>
+
+<section class="panel" data-nav="The one sentence">
+  <div class="eyebrow">THE WHOLE ARCHITECTURE, COMPRESSED</div>
+  <h2>The resolver never imports the plugin.</h2>
+  <p class="lead">That single fact explains the folder structure, the naming rules, <span class="path">configuration.yaml</span>,
+  and why adding a second commerce backend is a config change rather than a rewrite.</p>
+  <div class="grid g3" style="margin-top:30px;max-width:1250px">
+    <div class="card">
+      <h3><em class="k">Feature</em> — the contract</h3>
+      <p>An abstract class describing <strong>what</strong> a capability does. Provider-agnostic. Knows nothing about Shopify, Postgres or Klaviyo.</p>
+    </div>
+    <div class="card">
+      <h3><em class="k">Plugin</em> — the implementation</h3>
+      <p>A concrete class implementing that contract against <strong>one specific</strong> provider. All vendor knowledge is quarantined here.</p>
+    </div>
+    <div class="card">
+      <h3><em class="k">configuration.yaml</em> — the wiring</h3>
+      <p>Decides <strong>which</strong> plugin satisfies which feature, per consumer. The only place the two sides meet.</p>
+    </div>
+  </div>
+  <div class="warn" style="margin-top:26px;max-width:1250px">
+    <h3>The test you will apply all course</h3>
+    <p style="margin:0">If a file under <span class="path">features/</span> contains a vendor's name, a URL, or an SDK import —
+    it is in the wrong folder. That is the single most common off-pattern mistake, and the one Bob makes most often when
+    under-prompted.</p>
+  </div>
+</section>
+
+<!-- 3 ------------------------------------------------------------------ -->
+<section class="panel" data-nav="The trace ★">
+  <div class="eyebrow">THE CENTREPIECE — PIN THIS ONE</div>
+  <h2>One request, every file it touches</h2>
+  <p class="small" style="margin-bottom:16px">Query <span class="path">getBlogs(blogHandle:"news")</span> against
+  <span class="path">exo-cerebrum</span>. Real paths, real class names. Steps 5–7 are the delegation itself.</p>
+  <div class="trace" style="max-width:1250px">
+    <div class="step"><div class="dot">1</div><div class="body">
+      <div class="t">POST /graphql → Fastify</div>
+      <div class="p">src/apps/exo-cerebrum/nest.server.ts · configuration.yaml → graphqlPath: graphql</div></div></div>
+    <div class="step"><div class="dot">2</div><div class="body">
+      <div class="t">Middleware builds the RequestContext</div>
+      <div class="p">core/middleware → MiddlewareLoader · @context/request</div>
+      <div class="d">Consumer identity, locale, trace ids. Everything downstream receives this object.</div></div></div>
+    <div class="step"><div class="dot">3</div><div class="body">
+      <div class="t">Global AuthorizationGuard (APP_GUARD)</div>
+      <div class="p">configuration.yaml → defaultServiceGuard · doAPIUserAuthorizationByDefault</div>
+      <div class="d">Per-operation override lives in <span class="path">blog.api.configuration.ts</span> → <span class="path">isAuthRequired</span>.</div></div></div>
+    <div class="step"><div class="dot">4</div><div class="body">
+      <div class="t">Feature resolver — BlogResolver extends BaseFeatureResolver</div>
+      <div class="p">features/blog/blog.resolver.ts</div>
+      <div class="d">Args come from <span class="path">blog.parameters.ts</span>; the operation shape from <span class="path">blog.api.configuration.ts</span>.</div></div></div>
+    <div class="step key"><div class="dot">5</div><div class="body">
+      <div class="t">★ The delegation moment</div>
+      <div class="p">this.getRequestContextAndService&lt;BlogService&gt;(context, BlogService)</div>
+      <div class="d">The resolver asks for the <strong>abstract</strong> class and is handed a concrete instance. It never names a provider.</div></div></div>
+    <div class="step key"><div class="dot">6</div><div class="body">
+      <div class="t">Feature service — abstract contract only</div>
+      <div class="p">features/blog/blog.service.ts · abstract class BlogService extends BaseFeatureService</div>
+      <div class="d">Method signatures and doc comments. Zero implementation.</div></div></div>
+    <div class="step key"><div class="dot">7</div><div class="body">
+      <div class="t">configuration.yaml resolves the binding</div>
+      <div class="p">features: - id: blog → plugins: - id: *shopify → consumers: - id: *ase-01</div>
+      <div class="d">Change <span class="path">*shopify</span> to another anchor and steps 8–10 swap wholesale. Nothing above this line moves.</div></div></div>
+    <div class="step"><div class="dot">8</div><div class="body">
+      <div class="t">Plugin service — the implementation</div>
+      <div class="p">plugins/commerce/shopify/features/blog/shopify.blog.service.ts</div>
+      <div class="d"><span class="path">ShopifyBlogServiceImpl extends ShopifyBaseServiceImpl implements BlogService</span>. Orchestrates, catches, throws feature errors.</div></div></div>
+    <div class="step"><div class="dot">9</div><div class="body">
+      <div class="t">Datasource — the only thing that speaks to the outside world</div>
+      <div class="p">plugins/commerce/shopify/features/blog/shopify.blog.datasource.ts</div>
+      <div class="d">Issues the Shopify Storefront GraphQL call. Returns the vendor's raw shape, untouched.</div></div></div>
+    <div class="step"><div class="dot">10</div><div class="body">
+      <div class="t">Mapper — vendor shape → feature model</div>
+      <div class="p">plugins/commerce/shopify/features/blog/shopify.blog.mapper.ts</div>
+      <div class="d">The boundary. After this line, no Shopify vocabulary exists anywhere in the response.</div></div></div>
+    <div class="step"><div class="dot">11</div><div class="body">
+      <div class="t">Feature model returned to the client</div>
+      <div class="p">features/blog/blog.model.ts → Blog, BlogResultSet · errors from blog.error.ts</div></div></div>
+  </div>
+</section>
+
+<!-- 4 ------------------------------------------------------------------ -->
+<section class="panel" data-nav="Why it matters">
+  <div class="eyebrow">READING THE TRACE</div>
+  <h2>Three things that trace proves</h2>
+  <div class="grid g3" style="max-width:1250px;margin-bottom:14px">
+    <div class="card"><h3>1 · The seam is step 7</h3><p>Everything above it is client-facing and stable. Everything below it is vendor-specific and disposable. Every architectural argument you will have is about which side of that line something belongs on.</p></div>
+    <div class="card"><h3>2 · Errors are a feature concern</h3><p>The plugin catches the vendor's error and throws <span class="path">BlogErrors.getBlogsFailed()</span> — declared in <span class="path">features/blog/blog.error.ts</span>. Clients never see a Shopify error code.</p></div>
+    <div class="card"><h3>3 · The mapper is not optional plumbing</h3><p>It is the thing that makes the swap possible. A "quick" fix that returns a vendor field straight through has just welded the client to Shopify.</p></div>
+  </div>
+  <div class="two" style="max-width:1250px">
+    <div>
+      <h3>The delegation in code</h3>
+      <pre><span class="c">// features/blog/blog.resolver.ts — the feature side</span>
+const { requestContext, service } =
+    this.getRequestContextAndService&lt;<span class="m">BlogService</span>&gt;(context, <span class="m">BlogService</span>);
+
+return await service.getBlogs(blogHandle, requestContext, pagination);
+<span class="c">// ↑ BlogService is ABSTRACT. No `new`. No provider name. No import from plugins/.</span></pre>
+    </div>
+    <div>
+      <h3>The binding in config</h3>
+      <pre><span class="c"># configuration.yaml</span>
+<span class="g">plugins:</span>
+    - id: <span class="m">&amp;shopify</span> shopify
+      type: commerce
+
+<span class="g">features:</span>
+    - id: <span class="m">blog</span>
+      enabled: true
+      plugins:
+          - id: <span class="m">*shopify</span>
+            consumers:
+                - id: *ase-01</pre>
+    </div>
+  </div>
+</section>
+
+<!-- 5 ------------------------------------------------------------------ -->
+<section class="panel" data-nav="Three layers">
+  <div class="eyebrow">NAVIGATION · WHERE CODE LIVES</div>
+  <h2>Three layers, one rule</h2>
+  <p class="small" style="margin-bottom:12px">Every file sits in exactly one. Which one tells you what you may do to it.</p>
+  <div class="grid g3" style="max-width:1250px">
+    <div class="card">
+      <h3><span class="path" style="font-size:.82em">core/</span></h3>
+      <p style="margin-bottom:6px">The framework engine — <span class="path">foundation/</span> api, server, feature, plugin, datastore, context, error.</p>
+      <p style="margin:0"><em class="k">Never edit.</em></p>
+    </div>
+    <div class="card">
+      <h3><span class="path" style="font-size:.82em">core-modules/</span></h3>
+      <p style="margin-bottom:6px">Standard capabilities the platform ships — commerce, account, navigation, user… plus the Shopify and Postgres providers.</p>
+      <p style="margin:0"><em class="k">Consume, do not edit.</em></p>
+    </div>
+    <div class="card">
+      <h3><span class="path" style="font-size:.82em">src/apps/exo-cerebrum/</span></h3>
+      <p style="margin-bottom:6px">Your application — the features and plugins the platform does not ship, plus <span class="path">configuration.yaml</span>.</p>
+      <p style="margin:0"><em class="k">Yours. The only layer that changes.</em></p>
+    </div>
+  </div>
+
+  <div class="two" style="max-width:1250px;margin-top:18px">
+    <div>
+      <h3>Two ways the app reaches down</h3>
+      <pre><span class="c">// SHADOW — an Ext* class in src/apps/ wins over core/</span>
+class <span class="m">ExtAuthorizationGuard</span> extends AuthorizationGuard
+
+<span class="c">// EXTEND — inherit a standard model, add your fields</span>
+import { Product } from <span class="g">'@feature-commerce/product'</span>;
+export class <span class="m">ExtProduct</span> extends Product { }</pre>
+    </div>
+    <div class="side">
+      <h3>The import tells you the layer</h3>
+      <ul style="margin-bottom:8px">
+        <li><span class="path">@api</span> <span class="path">@feature</span> <span class="path">@guards</span> → <span class="path">core/</span></li>
+        <li><span class="path">@feature-commerce</span> <span class="path">@plugin-shopify</span> → <span class="path">core-modules/</span></li>
+        <li><span class="path">@apps/exo-cerebrum/…</span> → your app</li>
+      </ul>
+      <p style="margin:0">If a fix means editing the lower two, you have missed an extension point — and framework upgrades will cost you every patch by hand.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 ------------------------------------------------------------------ -->
+<section class="panel" data-nav="configuration.yaml">
+  <div class="eyebrow">THE SWITCHBOARD</div>
+  <h2>configuration.yaml — the one file that wires the app</h2>
+  <p class="small" style="margin-bottom:10px">Top to bottom, in file order. Nothing here is registered in code — click any block for the real YAML and what it controls.</p>
+
+  <div style="max-width:1250px">
+
+    <details class="fx">
+      <summary>
+        <span class="n">1</span>
+        <span><span class="fn">appName · graphqlPath · swaggerPath</span> <span class="ro">identity and the served surfaces</span></span>
+        <span class="tag">IDENTITY</span>
+      </summary>
+      <div class="b">
+<pre>appName: <span class="m">exo-cerebrum</span>
+swaggerPath: swagger
+graphqlPath: graphql</pre>
+        <p class="ex"><b>appName</b> is why the start command is <b>yarn start exo-cerebrum</b> — one repo can hold many apps under <b>src/apps/</b>, each with its own configuration.yaml. The two paths are literally the URLs served: <b>:3100/graphql</b> and <b>:3100/swagger</b>. Change <b>graphqlPath</b> and the playground moves.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">2</span>
+        <span><span class="fn">defaultServiceGuard · doAPIUserAuthorizationByDefault</span> <span class="ro">global auth switches</span></span>
+        <span class="tag">SECURITY</span>
+      </summary>
+      <div class="b">
+<pre>defaultServiceGuard: <span class="m">false</span>
+doAPIUserAuthorizationByDefault: <span class="m">false</span>
+doAPIAccessControl: false</pre>
+        <p class="ex">Auth is decided in <b>two</b> places, and this is the first: the global default. The second is per operation — <b>isAuthRequired</b> in each <b>&lt;feature&gt;.api.configuration.ts</b>. Both flags are false here, so the global guard runs on every request but enforces nothing, which is why the app needs no identity provider. <b>Flip these two to true in the final session</b> and every operation 401s until the guard is implemented.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">3</span>
+        <span><span class="fn">logger · loggerMaskedFields · locales</span> <span class="ro">observability and language</span></span>
+        <span class="tag">RUNTIME</span>
+      </summary>
+      <div class="b">
+<pre>appBootDebug:
+    logEntities: true
+logger: winston
+loggerMaskedFields:          <span class="c"># redacted everywhere they appear in logs</span>
+    - password
+    - <span class="m">clientSecret</span>
+    - <span class="m">access_token</span>
+locales:
+    - id: &amp;locale-en-us en-US
+      default: true
+spelunkerEnabled: true       <span class="c"># exposes the DI graph for inspection</span></pre>
+        <p class="ex"><b>loggerMaskedFields</b> is the one to point at — secrets are redacted by name wherever they appear in a log line, which is why you can safely turn on verbose logging in a shared environment. Note <b>locales</b> uses an anchor too (<b>&amp;locale-en-us</b>); anchors are not special to plugins.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">4</span>
+        <span><span class="fn">consumers</span> <span class="ro">who is calling — bindings are per consumer</span></span>
+        <span class="tag">CALLERS</span>
+      </summary>
+      <div class="b">
+<pre>consumers:
+    - id: <span class="m">&amp;training-app</span> training-app
+      enabled: true
+      default: true</pre>
+        <p class="ex">A consumer is a caller: the web console, the mobile app, an internal service. This is the concept most people miss — <b>a feature is bound to a plugin per consumer</b>, so the same <b>getBlogs</b> can resolve to Shopify for one caller and a CMS for another, from one running server. It is also the second way to make an operation vanish: leave the feature enabled but omit your consumer id, and it looks exactly like a missing resolver.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">5</span>
+        <span><span class="fn">databases</span> <span class="ro">commented out — Stage 2 only</span></span>
+        <span class="tag">DATA</span>
+      </summary>
+      <div class="b">
+<pre><span class="c"># databases:
+#     - id: &amp;ase-database ase-database
+#       type: postgres
+#       enabled: true</span>
+
+<span class="c"># NOTE: there is no `messengers:` block either — Kafka is out of scope.</span></pre>
+        <p class="ex">Absent on purpose, so the app needs no Postgres to boot. <b>Uncomment this without a running Postgres and the app does not degrade</b> — TypeORM retries ten times at three-second intervals and then fails to start, taking products and blogs down with it. Worth knowing: the loader <b>does</b> guard against a missing <b>messengers</b> or <b>consumers</b> block. It does not guard <b>adminFeatures</b> — see the last row.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">6</span>
+        <span><span class="fn">plugins</span> <span class="ro">declares each provider ONCE, and names it</span></span>
+        <span class="tag">PROVIDERS</span>
+      </summary>
+      <div class="b">
+<pre>plugins:
+    - id: <span class="m">&amp;shopify</span> shopify        <span class="c"># &amp; DEFINES the anchor</span>
+      name: Shopify
+      type: commerce
+      configuration:
+          tokenPurseId: shopify
+      variants:
+          - id: 2025-10                 <span class="c"># API version pinning</span>
+            configuration: { apiVersion: 2025-10 }
+      consumers:
+          - id: *training-app
+            pluginDefaultConsumer: true
+            configuration:
+                menus:                  <span class="c"># read AT BOOT by the category registry</span>
+                    rootCategory: { id: main-menu:Catalog, depth: 4 }</pre>
+        <p class="ex"><b>&amp;shopify</b> is a native YAML <b>anchor</b> — it declares a name that the rest of the file can point at. Everything about the provider lives here once: credentials pointer, API version variants, and per-consumer configuration. <b>Extend it</b> by adding a provider block; you do not touch any feature to do so.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">7</span>
+        <span><span class="fn">features</span> <span class="ro">turns capabilities on and points them at a provider</span></span>
+        <span class="tag">THE SEAM</span>
+      </summary>
+      <div class="b">
+<pre>features:
+    - id: health
+      enabled: true
+      <span class="m">standalone: true</span>          <span class="c"># no plugin at all — answers for itself</span>
+
+    - id: commerce                <span class="c"># a GROUP; children inherit nothing automatically</span>
+      features:
+          - id: product
+            enabled: true
+            plugins:
+                - id: <span class="m">*shopify</span>    <span class="c"># * REFERENCES the anchor — THIS IS THE SEAM</span>
+                  consumers:
+                      - id: *training-app
+
+    - id: blog
+      <span class="m">enabled: true</span>             <span class="c"># false ⇒ the field leaves the SCHEMA entirely</span>
+      plugins:
+          - id: *shopify
+            consumers: [ { id: *training-app } ]</pre>
+        <p class="ex">Three things live here. <b>enabled</b> — set it false and the field is not an error, it <b>does not exist</b> in the schema. <b>*shopify</b> — the reference that binds contract to implementation; change it and the whole implementation swaps with nothing above it moving. <b>standalone: true</b> — no plugin at all, the feature answers from its own resolver. Note <b>plugin:</b> singular is used for datastore-backed features and <b>plugins:</b> plural for the rest.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">8</span>
+        <span><span class="fn">adminFeatures</span> <span class="ro">empty — but the key must exist</span></span>
+        <span class="tag">GOTCHA</span>
+      </summary>
+      <div class="b">
+<pre>adminFeatures: <span class="m">[]</span></pre>
+        <p class="ex">Delete this key and the app dies at boot with <b>TypeError: Cannot read properties of undefined (reading 'forEach')</b>. The ConfigurationLoader iterates <b>adminFeatures</b> without checking it is defined — unlike <b>messengers</b> and <b>consumers</b>, which are guarded. An empty array satisfies it. This is a real trap, not a hypothetical: it is exactly what broke this config the first time it was written.</p>
+      </div>
+    </details>
+
+  </div>
+
+  <p class="small" style="margin-top:11px;max-width:1250px"><strong>Editing this file does not hot-reload.</strong> The app reads its config from <span class="path">dist/</span>, and <span class="path">nest start --watch</span> only restarts on TypeScript changes. After editing, save any <span class="path">.ts</span> file — or restart — before the change takes effect.</p>
+</section>
+
+<section class="panel" data-nav="Anatomy: feature">
+  <div class="eyebrow">NAVIGATION · GOLDEN PATH EXEMPLAR</div>
+  <h2>Anatomy of a feature — <span class="path" style="font-size:.7em">features/blog/</span></h2>
+  <p class="small" style="margin-bottom:10px">In the order they participate in a request. Every feature in the codebase is this same set — click any row for the real code and how you extend it.</p>
+
+  <div style="max-width:1250px">
+
+    <details class="fx">
+      <summary>
+        <span class="n">1</span>
+        <span><span class="fn">blog.module.ts</span> <span class="ro">registers the feature and exposes its token</span></span>
+        <span class="tag">BOOT</span>
+      </summary>
+      <div class="b">
+<pre>import { BaseFeatureModule } from <span class="g">"@feature/module"</span>;
+
+export class <span class="m">BlogModule</span> extends BaseFeatureModule { }</pre>
+        <p class="ex">Two lines, and you will almost never change them. It exists so <b>BlogModule.feature</b> is a token the resolver and every decorator can reference. <b>Extend it</b> only when a feature needs its own DI providers.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">2</span>
+        <span><span class="fn">blog.api.configuration.ts</span> <span class="ro">declares the operations — id, auth, REST shape</span></span>
+        <span class="tag">DECORATOR</span>
+      </summary>
+      <div class="b">
+<pre>static operations: BlogApiOperations = {
+    getBlogs: {
+        id: <span class="g">'getBlogs'</span>,
+        description: <span class="g">'Get blogs'</span>,
+        <span class="m">isAuthRequired: false</span>,      <span class="c">// per-operation auth</span>
+        queryOptions: { required: false },
+    },
+};
+
+static getBlogs(): ApiOperationOptions {
+    return this.composeOperationOptions(this.operations.getBlogs);
+}</pre>
+        <p class="ex">Read at class-definition time by the resolver's decorator, not per request. <b>Extend it</b> by adding an operation, or by flipping <b>isAuthRequired</b> — that single flag is what the final session's guard lab toggles.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">3</span>
+        <span><span class="fn">blog.parameters.ts</span> <span class="ro">defines the arguments the operation accepts</span></span>
+        <span class="tag">DECORATOR</span>
+      </summary>
+      <div class="b">
+<pre>export const BlogRequestParameters: BlogRequestParametersType = {
+    <span class="m">...RequestParameters</span>,          <span class="c">// inherits pagination, locale…</span>
+    blogHandle: {
+        id: <span class="g">'blogHandle'</span>,
+        description: <span class="g">'Blog container handle (e.g. "news")'</span>,
+    },
+};</pre>
+        <p class="ex">The spread is the part to notice — <b>...RequestParameters</b> gives you <b>pagination</b> for free, which is why the resolver can accept it without declaring it. <b>Extend it</b> by adding a key, then referencing it from an <b>@Args</b>.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">4</span>
+        <span><span class="fn">blog.resolver.ts</span> <span class="ro">the request enters here — and delegates</span></span>
+        <span class="tag">REQUEST</span>
+      </summary>
+      <div class="b">
+<pre>@Resolver(() =&gt; Blog, { feature })
+export class BlogResolver extends <span class="m">BaseFeatureResolver</span> {
+
+    @Query(() =&gt; BlogResultSet, BlogApiConfiguration.getBlogs().queryOptions, feature)
+    async getBlogs(
+        @Args({ parameter: BlogRequestParameters.blogHandle, required: true })
+        blogHandle: string,
+        @Context() context: any,
+    ): Promise&lt;BlogResultSet&gt; {
+        <span class="c">// THE DELEGATION MOMENT — asks for the ABSTRACT class</span>
+        const { requestContext, service } =
+            this.getRequestContextAndService&lt;<span class="m">BlogService</span>&gt;(context, <span class="m">BlogService</span>);
+
+        return await service.getBlogs(blogHandle, requestContext, pagination);
+    }
+}</pre>
+        <p class="ex">No <b>new</b>. No import from <b>plugins/</b>. It names only the abstract class and is handed whatever <b>configuration.yaml</b> bound for this consumer. <b>Extend it</b> by adding a <b>@Query</b> or <b>@Mutation</b> — but add the abstract method in step 5 first.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">5</span>
+        <span><span class="fn">blog.service.ts</span> <span class="ro">the contract — signatures, zero implementation</span></span>
+        <span class="tag">REQUEST</span>
+      </summary>
+      <div class="b">
+<pre>export <span class="m">abstract</span> class BlogService extends BaseFeatureService {
+
+    <span class="c">/** Fetch a single blog article */</span>
+    <span class="m">abstract</span> getBlog(
+        blogHandle: string,
+        articleHandle: string,
+        requestContext: RequestContext,
+    ): Promise&lt;Blog&gt;;
+
+    <span class="m">abstract</span> getBlogs(
+        blogHandle: string,
+        requestContext: RequestContext,
+        pagination?: PaginationInput,
+    ): Promise&lt;BlogResultSet&gt;;
+}</pre>
+        <p class="ex">The most important file in the folder, and it contains no logic at all. <b>This is always the first file you edit.</b> Add an abstract method here and every plugin implementing <b>BlogService</b> stops compiling until it provides one — the compiler enforces the contract for you.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">6</span>
+        <span><span class="fn">blog.model.ts</span> <span class="ro">the shape the client receives</span></span>
+        <span class="tag">RESPONSE</span>
+      </summary>
+      <div class="b">
+<pre>@ObjectType({ description: <span class="g">'EXO Blog Article'</span> })
+export class Blog {
+
+    @Field({ description: <span class="g">'SEO Friendly handle'</span> })
+    handle?: string;
+
+    @Field({ type: () =&gt; [String], description: <span class="g">'Article tags'</span> })
+    tags?: string[];
+}
+
+@ObjectType()
+export class BlogResultSet extends <span class="m">ResultSet&lt;Blog&gt;</span> {
+    @Field({ type: () =&gt; [Blog] })
+    results?: Blog[];        <span class="c">// note: results, not items</span>
+}</pre>
+        <p class="ex">Pure vocabulary — your words, never the provider's. <b>Extend it</b> by adding a <b>@Field</b>, then mapping it in the plugin's mapper. Nothing else changes; the resolver never moves.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">7</span>
+        <span><span class="fn">blog.error.ts</span> <span class="ro">failures the client is allowed to see</span></span>
+        <span class="tag">FAILURE</span>
+      </summary>
+      <div class="b">
+<pre>protected static errors: BlogErrorsType = {
+    ...FeatureErrors.errors,
+    getBlogsFailed: {
+        code: <span class="g">'EXO_BLOG_LIST_FAILED'</span>,
+        message: <span class="g">'Failed to retrieve blog list'</span>,
+        statusCode: 400,
+    },
+};
+
+static getBlogsFailed(): HttpException {
+    return this.composeHTTPError(this.errors.getBlogsFailed);
+}</pre>
+        <p class="ex">Owned by the <b>feature</b>, thrown by the <b>plugin</b>. That is deliberate: the plugin catches whatever Shopify threw and rethrows one of these, so a vendor error code never reaches a client. <b>Extend it</b> with a new entry plus its static factory.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">8</span>
+        <span><span class="fn">index.ts</span> <span class="ro">the surface the plugin imports from</span></span>
+        <span class="tag">EXPORTS</span>
+      </summary>
+      <div class="b">
+<pre>export * from <span class="g">'./blog.module'</span>;
+export * from <span class="g">'./blog.model'</span>;
+export * from <span class="g">'./blog.service'</span>;
+export * from <span class="g">'./blog.error'</span>;
+
+<span class="c">// the plugin then does:</span>
+<span class="c">// import { Blog, BlogErrors, BlogService } from '@apps/exo-cerebrum/features/blog';</span></pre>
+        <p class="ex">The barrel is how the plugin reaches the contract without importing individual files. <b>Do not add a package.json beside it</b> — an empty one breaks directory resolution at runtime while still compiling clean.</p>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- 6 ------------------------------------------------------------------ -->
+<section class="panel" data-nav="Anatomy: plugin">
+  <div class="eyebrow">NAVIGATION · THE OTHER SIDE OF THE SEAM</div>
+  <h2>Anatomy of a plugin — <span class="path" style="font-size:.62em">plugins/commerce/shopify/features/blog/</span></h2>
+  <p class="small" style="margin-bottom:10px">Four files, same request order. Everything Shopify knows about lives here and nowhere else.</p>
+
+  <div style="max-width:1250px">
+
+    <details class="fx">
+      <summary>
+        <span class="n">1</span>
+        <span><span class="fn">shopify.blog.module.ts</span> <span class="ro">registers the plugin's components</span></span>
+        <span class="tag">BOOT</span>
+      </summary>
+      <div class="b">
+<pre>import { ShopifyBaseModule } from <span class="g">"@plugin-shopify/common"</span>;
+
+export class <span class="m">ShopifyBlogModule</span> extends ShopifyBaseModule { }
+
+<span class="c">// at boot the loader resolves classes BY FILENAME:</span>
+<span class="c">//   **/shopify/features/blog/**/*shopify.blog*.service.js</span></pre>
+        <p class="ex">One line again — the work is done by the base class. Note what it logs at boot: components are discovered by <b>file-name glob</b>, not by import. That is why <b>&lt;provider&gt;.&lt;feature&gt;.&lt;role&gt;.ts</b> is not a style preference — misname a file and it is simply never found.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">2</span>
+        <span><span class="fn">shopify.blog.service.ts</span> <span class="ro">implements the contract, orchestrates the other two</span></span>
+        <span class="tag">REQUEST</span>
+      </summary>
+      <div class="b">
+<pre>export class ShopifyBlogServiceImpl extends ShopifyBaseServiceImpl
+    <span class="m">implements BlogService</span> {          <span class="c">// the contract from the feature side</span>
+
+    async getBlog(blogHandle, articleHandle, requestContext): Promise&lt;Blog&gt; {
+        const ds     = this.getBlogDatasource(requestContext);
+        const mapper = this.getBlogMapper(requestContext);
+
+        try {
+            result = await ds.getArticleByHandle(requestContext, blogHandle, articleHandle);
+        } catch (error) {
+            <span class="m">throw BlogErrors.getBlogFailed();</span>   <span class="c">// FEATURE error, not Shopify's</span>
+        }
+
+        if (!article) throw BlogErrors.getBlogNotFound();
+
+        return mapper.mapArticle(requestContext, article);
+    }
+
+    protected getBlogDatasource(rc) { return this.getDatasource&lt;ShopifyBlogDatasource&gt;(rc, ShopifyBlogDatasource); }
+    protected getBlogMapper(rc)     { return this.getMapper&lt;ShopifyBlogMapper&gt;(rc, ShopifyBlogMapper); }</pre>
+        <p class="ex">It fetches nothing and maps nothing — it <b>coordinates</b>, and it translates failure. <b>Extend it</b> when you add an abstract method to the feature service: TypeScript will refuse to compile until you do, which is the contract enforcing itself.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">3</span>
+        <span><span class="fn">shopify.blog.datasource.ts</span> <span class="ro">the only file that performs I/O</span></span>
+        <span class="tag">I/O</span>
+      </summary>
+      <div class="b">
+<pre>export class ShopifyBlogDatasource extends ShopifyBaseDatasource {
+
+    private readonly ARTICLE_FIELDS = `
+        id  title  handle  contentHtml  excerpt  publishedAt  tags
+        authorV2 { name email }
+        <span class="m">image { url altText width height }</span>
+        blog { handle title }
+    `;
+
+    async getBlogArticles(requestContext, blogHandle, first, after) {
+        return this.executeGQL(requestContext, {
+            id: <span class="g">'getBlogArticles'</span>,
+            method: <span class="g">'post'</span>,
+            query: { queryId: <span class="g">'getBlogArticles'</span>, query: `…${this.ARTICLE_FIELDS}…` },
+        }, { blogHandle, first, after });
+    }
+}</pre>
+        <p class="ex">Returns Shopify's raw payload, untouched. <b>It must not map</b> — one transformation in here and the mapper stops being the boundary. <b>Extend it</b> only when the vendor genuinely is not sending the data yet; check <b>ARTICLE_FIELDS</b> first, because it often already is.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">4</span>
+        <span><span class="fn">shopify.blog.mapper.ts</span> <span class="ro">vendor vocabulary becomes yours</span></span>
+        <span class="tag">RESPONSE</span>
+      </summary>
+      <div class="b">
+<pre>export class ShopifyBlogMapper extends ShopifyBaseMapper {
+
+    mapArticle(requestContext, dsArticle): Blog {
+        if (!dsArticle) return null;
+
+        const model = new Blog();
+
+        model.handle    = dsArticle.handle;
+        model.content   = dsArticle.contentHtml || dsArticle.content || null;
+        model.author    = dsArticle.<span class="m">authorV2?.name</span> || null;   <span class="c">// flattened</span>
+        model.image     = dsArticle.<span class="m">image?.url</span> || null;      <span class="c">// altText/width/height dropped</span>
+        model.tags      = dsArticle.tags || [];
+
+        return model;
+    }
+}</pre>
+        <p class="ex">The boundary. After this line no Shopify field name exists anywhere in the response — <b>authorV2</b> became <b>author</b>, and that renaming is the whole reason the provider is swappable. <b>It must not fetch.</b> Look closely at the image line: the datasource asked for four fields and only one survives. That is your first lab.</p>
+      </div>
+    </details>
+
+  </div>
+
+  <p class="small" style="margin-top:12px;max-width:1250px">Some plugin features add <span class="path">*.schema.ts</span> (the vendor query document) and <span class="path">*.configuration.type.ts</span> (typed per-feature config read from <span class="path">configuration.yaml</span>). Nothing here may import another plugin.</p>
+</section>
+
+<!-- 7 ------------------------------------------------------------------ -->
+<!-- 8 ------------------------------------------------------------------ -->
+<!-- 9 ------------------------------------------------------------------ -->
+<section class="panel" data-nav="Datastores">
+  <div class="eyebrow">A PROVIDER YOU OWN</div>
+  <h2>Databases are plugins too</h2>
+  <p class="small" style="margin-bottom:10px">Postgres sits behind exactly the same seam as Shopify. Only the middle of the pipeline changes — and the mapper survives, which is the whole point.</p>
+
+  <table style="max-width:1250px;margin-bottom:14px">
+    <tr><th style="width:22%"></th><th style="width:39%">blog → Shopify</th><th>feedback → Postgres</th></tr>
+    <tr class="hi"><td class="f">Feature side</td><td>resolver · abstract service · model · error</td><td><em class="k">identical</em></td></tr>
+    <tr><td class="f">Reaches out via</td><td>HTTP GraphQL call</td><td>TypeORM repository</td></tr>
+    <tr><td class="f">Query lives in</td><td><span class="path">*.schema.ts</span></td><td><span class="path">*.entity.ts</span> + a migration</td></tr>
+    <tr class="hi"><td class="f">Mapper</td><td>vendor JSON → feature model</td><td><strong>DB row → feature model</strong></td></tr>
+    <tr><td class="f">Wired by</td><td><span class="path">*shopify</span></td><td><span class="path">*training-database</span></td></tr>
+  </table>
+
+  <div style="max-width:1250px">
+
+    <details class="fx">
+      <summary>
+        <span class="n">1</span>
+        <span><span class="fn">databases:</span> <span class="ro">declares the datastore and names it</span></span>
+        <span class="tag">CONFIG</span>
+      </summary>
+      <div class="b">
+<pre>databases:
+    - id: <span class="m">&amp;training-database</span> training-database
+      type: postgres
+      enabled: true</pre>
+        <p class="ex">Same anchor mechanism as <b>&amp;shopify</b> — a datastore plugin will point at <b>*training-database</b> exactly as a commerce feature points at <b>*shopify</b>. Note what is <em class="k">not</em> here: no host, no user, no password. Connection values are environment, never config.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">2</span>
+        <span><span class="fn">.env</span> <span class="ro">where the connection actually comes from</span></span>
+        <span class="tag">ENV</span>
+      </summary>
+      <div class="b">
+<pre>PGHOST=localhost
+PGPORT=5432
+PGDATABASE=exo_training
+PGUSER=postgres
+PGPASSWORD=<span class="c">…</span>
+<span class="m">APP_DB_SCHEMA=training</span>   <span class="c"># tables land here, NOT in public</span></pre>
+        <p class="ex">The boot log prints every one of these back at you — except the password, which <b>loggerMaskedFields</b> redacts. <b>APP_DB_SCHEMA</b> is the one to remember: a bare <span class="path">\dt</span> in psql reports "Did not find any tables" because it searches <b>public</b>. The tables are in <b>training</b>.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">3</span>
+        <span><span class="fn">migrations/001_create_feedback.sql</span> <span class="ro">the schema, in version control</span></span>
+        <span class="tag">SCHEMA</span>
+      </summary>
+      <div class="b">
+<pre>CREATE TABLE IF NOT EXISTS <span class="m">__APP_SCHEMA__</span>.feedback (
+    id              uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
+    session_number  integer      NOT NULL,
+    rating          integer      NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    comment         text,
+    created_at      timestamptz  NOT NULL DEFAULT now()
+);</pre>
+        <p class="ex">It says <b>__APP_SCHEMA__</b>, not <b>training</b>. The runner substitutes <b>APP_DB_SCHEMA</b> at execution time, so one file runs unchanged against a different schema in every environment. <b>Never hard-code a schema name in a migration.</b> And never edit one that has already run — it is recorded as applied, so it is skipped and your edit silently does nothing. Add a new numbered file.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">4</span>
+        <span><span class="fn">yarn migrate:feedback</span> <span class="ro">applies what has not been applied</span></span>
+        <span class="tag">RUNNER</span>
+      </summary>
+      <div class="b">
+<pre><span class="c"># first run, on a machine with no database at all</span>
+<span class="m">Created database exo_training</span>
+Applying 001_create_feedback.sql
+Applying 002_seed_feedback.sql
+Migrations complete.
+
+<span class="c"># run it again</span>
+<span class="m">Skipping</span> 001_create_feedback.sql (already applied)
+<span class="m">Skipping</span> 002_seed_feedback.sql (already applied)</pre>
+        <p class="ex">Idempotent by design — every applied file is recorded in a <b>schema_migrations</b> table, so this is safe to run on every deploy. Each migration runs in <b>its own transaction</b>, so a failure in 002 leaves 001 applied and recorded rather than half-done. A Postgres <b>advisory lock</b> stops two runners racing. Creating the database cannot be a migration: the runner must connect to it first, and Postgres refuses <b>CREATE DATABASE</b> inside a transaction.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">5</span>
+        <span><span class="fn">the datastore plugin</span> <span class="ro">same four roles, different mechanics</span></span>
+        <span class="tag">PLUGIN</span>
+      </summary>
+      <div class="b">
+<pre><span class="c">// the shape, alongside its Shopify counterpart</span>
+
+shopify.blog.datasource.ts     → executeGQL(...)          <span class="c">// HTTP</span>
+app-feedback-db.feedback.datasource.ts → repository.find() <span class="c">// SQL</span>
+
+shopify.blog.mapper.ts         → dsArticle.authorV2?.name
+app-feedback-db.feedback.mapper.ts     → row.submitted_by</pre>
+        <p class="ex">The service still <b>implements</b> the feature's abstract class. The datasource is still the only file doing I/O — it just holds a repository instead of a URL. And the mapper still turns the provider's shape into yours.</p>
+        <p class="ex" style="margin-top:8px"><b>Ask the room:</b> if a mapper only exists to protect you from a third party, why does this one need one? Because the client should not be coupled to your table shape either. Column renames, joins and denormalisation are your business, not the client's.</p>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<section class="panel" data-nav="Anatomy: datastore">
+  <div class="eyebrow">NAVIGATION · THE PROVIDER YOU OWN</div>
+  <h2>Anatomy of a datastore plugin — <span class="path" style="font-size:.6em">plugins/app-feedback-db/</span></h2>
+  <p class="small" style="margin-bottom:10px">Six files. Same four roles as the Shopify plugin, with one difference worth stopping on: <strong>there is no datasource file</strong> — the TypeORM repository is the datasource, and the framework hands it to you.</p>
+
+  <div style="max-width:1250px">
+
+    <details class="fx">
+      <summary>
+        <span class="n">1</span>
+        <span><span class="fn">features/feedback/app-feedback-db.feedback.module.ts</span> <span class="ro">registers, and finds the entities</span></span>
+        <span class="tag">BOOT</span>
+      </summary>
+      <div class="b">
+<pre>import { BaseDatabasePluginModule } from <span class="g">'@plugin-datasource-database'</span>;
+
+export class <span class="m">FeedbackDbFeedbackModule</span> extends BaseDatabasePluginModule { }
+
+<span class="c">// what it logs at boot:</span>
+<span class="c">// Resolved database entities:</span>
+<span class="c">//   app-feedback-db\features\feedback\**\*app-feedback-db.feedback*.entity.js</span></pre>
+        <p class="ex">One line, like every other module. But notice the log: <b>entities are discovered by filename glob</b> — nothing imports the entity here. The base class then calls <b>TypeOrmModule.forFeature(entities, database.id)</b> for you. Misname an entity file and it is silently never registered.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">2</span>
+        <span><span class="fn">entities/app-feedback-db.feedback.entity.ts</span> <span class="ro">the TABLE, not the API</span></span>
+        <span class="tag">SCHEMA</span>
+      </summary>
+      <div class="b">
+<pre>@Entity({ name: <span class="g">'feedback'</span> })
+export class <span class="m">FeedbackEntity</span> {
+
+    @PrimaryGeneratedColumn(<span class="g">'uuid'</span>)
+    id?: string;
+
+    @Column({ name: <span class="m">'session_number'</span>, type: <span class="g">'int'</span> })
+    sessionNumber?: number;
+
+    @Column({ name: <span class="m">'submitted_by'</span>, type: <span class="g">'varchar'</span>, length: 120, nullable: true })
+    submittedBy?: string;
+}</pre>
+        <p class="ex">This describes <b>the table</b> — snake_case columns, varchar lengths, nullability. <b>feedback.model.ts</b> describes the API. They look alike today and diverge the moment you rename a column, add a join, or decide the client should not see a field. <b>Nothing outside this plugin should ever see a FeedbackEntity.</b></p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">3</span>
+        <span><span class="fn">common/db-app-feedback-db.base.service.ts</span> <span class="ro">where getRepository comes from</span></span>
+        <span class="tag">BASE</span>
+      </summary>
+      <div class="b">
+<pre>import { BaseDatabasePluginServiceImpl } from <span class="g">'@plugin-datasource-database'</span>;
+
+export class <span class="m">DBFeedbackDBBaseServiceImpl</span> extends BaseDatabasePluginServiceImpl { }
+
+<span class="c">// what it inherits, from core:</span>
+protected getRepository&lt;T&gt;(entityClass): T {
+    return this.moduleRef.get(
+        getRepositoryToken(entityClass, <span class="m">this.plugin.configuration.database.id</span>),
+        { strict: false });
+}</pre>
+        <p class="ex">The plugin-local base class exists purely to inherit this. Look at the second argument: <b>database.id</b> — the string <span class="path">training-database</span> from configuration.yaml. <b>That is how an entity gets bound to one specific connection.</b> Declare a second database and the same entity could be read from either.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">4</span>
+        <span><span class="fn">features/feedback/app-feedback-db.feedback.service.ts</span> <span class="ro">implements the contract, runs the query</span></span>
+        <span class="tag">REQUEST</span>
+      </summary>
+      <div class="b">
+<pre>export class FeedbackDBFeedbackServiceImpl extends DBFeedbackDBBaseServiceImpl
+    <span class="m">implements FeedbackService</span> {          <span class="c">// the feature's abstract class</span>
+
+    async getFeedback(requestContext, pagination?) {
+        const repository = this.getFeedbackRepository();   <span class="c">// ← the "datasource"</span>
+        const mapper     = this.getFeedbackMapper(requestContext);
+
+        try {
+            [entities, count] = await repository.findAndCount({
+                order: { createdAt: <span class="g">'DESC'</span> }, take: limit, skip: offset });
+        } catch (error) {
+            <span class="m">throw FeedbackErrors.getFeedbackFailed();</span>   <span class="c">// FEATURE error, not a PG one</span>
+        }
+
+        return { results: mapper.mapFeedbackList(requestContext, entities),
+                 pagination: mapper.composePagination(limit, offset, count) };
+    }
+
+    protected getFeedbackRepository(): Repository&lt;FeedbackEntity&gt; {
+        return this.getRepository&lt;Repository&lt;FeedbackEntity&gt;&gt;(FeedbackEntity);
+    }</pre>
+        <p class="ex">Compare it to <b>shopify.blog.service.ts</b> — it implements the abstract class, catches provider errors and rethrows feature ones, and hands raw data to a mapper. Identical responsibilities. The repository simply replaces the datasource file.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">5</span>
+        <span><span class="fn">features/feedback/app-feedback-db.feedback.mapper.ts</span> <span class="ro">row → feature model</span></span>
+        <span class="tag">RESPONSE</span>
+      </summary>
+      <div class="b">
+<pre>mapFeedback(requestContext, entity: FeedbackEntity): Feedback {
+    if (!entity) return null;
+
+    const model = new Feedback();
+
+    model.submittedBy = entity.submittedBy ?? null;
+    model.createdAt   = entity.createdAt
+        ? <span class="m">new Date(entity.createdAt).toISOString()</span> : null;   <span class="c">// Date → string</span>
+
+    return model;
+}</pre>
+        <p class="ex">The boundary, and the file people argue about. <b>createdAt</b> is a <b>Date</b> in the entity and a string in the API — types differ, not just names. Rename <span class="path">submitted_by</span> in the database tomorrow and <em class="k">only this file and the entity change</em>; the API is untouched. That is what the mapper buys you against your own schema.</p>
+      </div>
+    </details>
+
+    <details class="fx">
+      <summary>
+        <span class="n">6</span>
+        <span><span class="fn">common/db-app-feedback-db.base.mapper.ts</span> <span class="ro">pagination, computed not copied</span></span>
+        <span class="tag">BASE</span>
+      </summary>
+      <div class="b">
+<pre>composePagination(limit: number, offset: number, count: number): Pagination {
+    const totalPages = count &lt; limit ? 1 : Math.ceil(count / limit);
+    const pageNumber = Math.ceil(offset / limit) + 1;
+
+    return { page: pageNumber, pageSize: limit, resultCount: count,
+             pageCount: totalPages, hasMorePages: pageNumber &lt; totalPages };
+}</pre>
+        <p class="ex">Shopify hands back a cursor and <b>hasNextPage</b>, so its mapper just copies them. Postgres offers nothing of the kind — pagination has to be <b>computed</b> from limit, offset and a COUNT. Different provider, different pagination model, <em class="k">same Pagination object at the end</em>. That is the seam doing its job.</p>
+      </div>
+    </details>
+
+  </div>
+
+  <p class="small" style="margin-top:11px;max-width:1250px">Also here, outside the plugin's runtime code: <span class="path">migrations/*.sql</span> and <span class="path">scripts/run-migrations.js</span>. Those are a <strong>deploy-time</strong> concern — the runner never reads <span class="path">configuration.yaml</span> and never loads Nest.</p>
+</section>
+
+<section class="panel" data-nav="Curriculum map">
+  <div class="eyebrow">FIFTEEN SESSIONS · THIRTY HOURS</div>
+  <h2>Curriculum map</h2>
+  <table style="max-width:1250px">
+    <tr><th style="width:34%">Phase</th><th style="width:10%">Sessions</th><th style="width:8%">Hrs</th><th>Spine</th></tr>
+    <tr class="hi"><td class="f">1 — TS standards, NestJS, Postgres</td><td>3</td><td>6</td><td>Module ≈ NgModule. TS conventions folded in, not taught standalone.</td></tr>
+    <tr class="hi"><td class="f">2 — GraphQL</td><td>2</td><td>4</td><td>Schema, resolvers, code-first in NestJS, N+1 and DataLoader.</td></tr>
+    <tr class="hi"><td class="f">3 — CatalystJS architecture</td><td>3</td><td>6</td><td>Class-loading hierarchy, bootstrap, configuration.yaml, request lifecycle.</td></tr>
+    <tr class="hi"><td class="f">4 — Features &amp; plugins</td><td>4</td><td>8</td><td>Feature anatomy · plugin + datasource + mapper · guards, middleware, observability · build one end to end.</td></tr>
+    <tr><td class="f">5 — Codebase walkthroughs</td><td>—</td><td>—</td><td class="gold">Distributed as the daily Trace It drill rather than one late session.</td></tr>
+    <tr class="hi"><td class="f">6 — Hands-on, Helm, capstone</td><td>3</td><td>6</td><td>Deploy and migrations · build-and-defend capstone across two sessions.</td></tr>
+  </table>
+  <div class="grid g3" style="margin-top:22px;max-width:1250px">
+    <div class="card"><h3>Reclaimed</h3><p>One session from Phase 1 and one from Phase 5 — TypeScript basics are the most compressible thing on the list when Bob is in the room.</p></div>
+    <div class="card"><h3>Reinvested</h3><p>Into Phase 4, which is the actual subject of the course, and into a capstone long enough to be defended rather than submitted.</p></div>
+    <div class="card"><h3>Unchanged</h3><p>Fifteen sessions, thirty hours, three weeks, two hours a day. The commitment you already published holds.</p></div>
+  </div>
+</section>
+
+<!-- 10 ----------------------------------------------------------------- -->
+<section class="panel" data-nav="Session template">
+  <div class="eyebrow">PHASE 4 · SESSION 1 — WORKED EXAMPLE OF THE FORMAT</div>
+  <h2>Feature anatomy</h2>
+  <div class="two" style="max-width:1300px">
+    <div>
+      <h3>Objective</h3>
+      <p style="margin-bottom:14px">By the end, each participant can open an unfamiliar feature folder and say what every file does
+      without opening it — and can name which file a given change belongs in.</p>
+      <h3>Shape of the two hours</h3>
+      <table>
+        <tr><th style="width:16%">Time</th><th>Activity</th></tr>
+        <tr><td class="f">0:00</td><td>Trace It drill — yesterday's field, cold</td></tr>
+        <tr><td class="f">0:10</td><td>Concept: contract vs implementation; where the seam sits</td></tr>
+        <tr><td class="f">0:25</td><td>Live read of <span class="path">features/blog/</span>, file by file</td></tr>
+        <tr><td class="f">0:50</td><td>Lab (below) — pairs, Bob permitted</td></tr>
+        <tr><td class="f">1:35</td><td>Two pairs present; class finds the off-pattern line</td></tr>
+        <tr><td class="f">1:55</td><td>Exit ticket</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="side" style="margin-bottom:14px">
+        <h3>Lab</h3>
+        <p>Add a <span class="path">getBlogTags</span> operation to the blog feature. Contract first, implementation second.</p>
+        <p style="margin-bottom:0"><strong>Acceptance criteria</strong> — all four must hold:</p>
+        <ul style="margin:8px 0 0">
+          <li>Nothing under <span class="path">features/</span> mentions Shopify</li>
+          <li>The abstract service was edited <em class="k">before</em> the plugin service</li>
+          <li>Failure throws a <span class="path">blog.error.ts</span> error, not a vendor error</li>
+          <li>The app boots — an off-pattern component is rejected at load</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Checking Bob's output</h3>
+        <ul style="margin-bottom:0">
+          <li>Grep the diff for the provider name under <span class="path">features/</span> — first and fastest check</li>
+          <li>Did it import from <span class="path">plugins/</span> into a feature? Reject.</li>
+          <li>Did it add a mapper, or return vendor fields raw?</li>
+          <li>Did it invent a filename? Compare against <span class="path">blog/</span> literally.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <p class="small" style="margin-top:16px">Exit ticket: <em>name the file you would open first if <span class="path">getBlogTags</span> returned null in SIT but worked locally.</em></p>
+</section>
+
+<!-- 11 ----------------------------------------------------------------- -->
+<section class="panel" data-nav="Trace It drill">
+  <div class="eyebrow">THE DAILY HABIT · TEN MINUTES, EVERY SESSION</div>
+  <h2>Trace It</h2>
+  <p class="lead">Put a real response field on screen. Ask the room to name every file it passed through, in order.
+  Week one they use the trace panel. Week three they will not need it — and that is the whole course, measured.</p>
+  <div class="grid g2" style="max-width:1250px;margin-top:24px">
+    <div class="card">
+      <h3>Ramp</h3>
+      <ul style="margin-bottom:0">
+        <li><strong>Day 1–3</strong> — trace panel visible, name the folders only</li>
+        <li><strong>Day 4–8</strong> — panel hidden, name the files</li>
+        <li><strong>Day 9–12</strong> — name the files, then say which would change for a given new requirement</li>
+        <li><strong>Day 13–15</strong> — given a symptom, name the file you open first and why</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Starter prompts</h3>
+      <ul style="margin-bottom:0">
+        <li>A blog article's <span class="path">publishedAt</span> is off by a timezone. Which file?</li>
+        <li>The client wants blogs paginated by 25. Which files, and which must <em class="k">not</em> change?</li>
+        <li>Shopify starts returning 429. Where is that caught, and what does the client see?</li>
+        <li>A second commerce provider arrives. List everything that changes.</li>
+        <li>A feature works in Dev and 404s in SIT. What do you check before reading any code?</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small" style="margin-top:22px">Answers to the last two: nothing above step 7 changes for a new provider — a plugin folder and one anchor in
+  <span class="path">configuration.yaml</span>. And the SIT 404 is <span class="path">enabled:</span> or a missing consumer id, nine times in ten.</p>
+</section>
+
+</main>
+
+<script>
+(function(){
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var nav = document.getElementById('nav');
+  var bar = document.getElementById('bar');
+  var rail = document.getElementById('rail');
+  var links = [];
+  var cur = 0;
+
+  panels.forEach(function(p,i){
+    var a = document.createElement('a');
+    a.href = '#';
+    a.innerHTML = '<span class="n">'+(i+1)+'</span><span>'+p.dataset.nav+'</span>';
+    a.addEventListener('click', function(e){ e.preventDefault(); go(i); });
+    nav.appendChild(a); links.push(a);
+  });
+
+  function go(i){
+    i = Math.max(0, Math.min(panels.length-1, i));
+    panels[i].scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function mark(i){
+    if(i===cur) return;
+    cur = i;
+    links.forEach(function(a,j){ a.classList.toggle('on', j===i); });
+    bar.style.width = ((i+1)/panels.length*100)+'%';
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting) mark(panels.indexOf(en.target));
+    });
+  }, {threshold:0.55});
+  panels.forEach(function(p){ io.observe(p); });
+  mark(0);
+
+  document.addEventListener('keydown', function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    var k = e.key;
+    if(k==='ArrowRight'||k==='ArrowDown'||k==='PageDown'||k===' '||k==='j'){ e.preventDefault(); go(cur+1); }
+    else if(k==='ArrowLeft'||k==='ArrowUp'||k==='PageUp'||k==='k'){ e.preventDefault(); go(cur-1); }
+    else if(k==='Home'){ e.preventDefault(); go(0); }
+    else if(k==='End'){ e.preventDefault(); go(panels.length-1); }
+    else if(k>='1'&&k<='9'){ e.preventDefault(); go(parseInt(k,10)-1); }
+    else if(k==='0'){ e.preventDefault(); go(9); }
+    else if(k==='s'){ rail.classList.toggle('hide'); rail.classList.toggle('show'); }
+    else if(k==='t'){
+      var h = document.documentElement;
+      h.setAttribute('data-theme', h.getAttribute('data-theme')==='light' ? 'dark' : 'light');
+    }
+  });
+
+  /* ---- auto-fit: no panel is ever allowed to overflow its screen ---- */
+  panels.forEach(function(p){
+    var fit = document.createElement('div');
+    fit.className = 'fit';
+    while(p.firstChild) fit.appendChild(p.firstChild);
+    p.appendChild(fit);
+  });
+  function refit(){
+    panels.forEach(function(p){
+      var fit = p.querySelector('.fit');
+      fit.style.zoom = 1;
+      var st = getComputedStyle(p);
+      var avail = p.clientHeight - parseFloat(st.paddingTop) - parseFloat(st.paddingBottom);
+      var needs = fit.scrollHeight;
+      if(needs > avail) fit.style.zoom = Math.max(0.62, (avail/needs) * 0.985);
+    });
+  }
+  refit();
+  window.addEventListener('resize', refit);
+  window.addEventListener('load', refit);
+
+  /* ---- expandable file rows: accordion, and re-fit after opening ---- */
+  document.querySelectorAll('.fx').forEach(function(d){
+    d.addEventListener('toggle', function(){
+      if(d.open){
+        d.closest('.panel').querySelectorAll('.fx').forEach(function(o){
+          if(o !== d) o.open = false;
+        });
+      }
+      refit();
+    });
+  });
+
+  document.getElementById('toggle').addEventListener('click', function(){
+    rail.classList.remove('hide'); rail.classList.add('show');
+  });
+  nav.addEventListener('click', function(){
+    if(window.innerWidth<=1100) rail.classList.remove('show');
+  });
+})();
+</script>
+</body>
+</html>

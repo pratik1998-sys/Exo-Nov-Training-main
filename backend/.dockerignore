@@ -1,0 +1,9 @@
+./dist
+./generated
+./node_modules
+**/*/node_modules
+./node-modules
+*swagger.json
+*.tar
+*.tar.gz
+*.zip

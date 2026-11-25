@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@plugin-tutorial-pet-graphql": [
+            "core-modules/plugins/tutorial-pet-graphql"
+        ],
+        "@plugin-tutorial-pet-graphql/*": [
+            "core-modules/plugins/tutorial-pet-graphql/*"
+        ]
+    }
+}

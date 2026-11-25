@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-contact": [
+            "core-modules/features/contact"
+        ],
+        "@feature-contact/*": [
+            "core-modules/features/contact/*"
+        ]
+    }
+}

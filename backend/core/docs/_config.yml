@@ -1,0 +1,36 @@
+# GitHub Pages / Jekyll config for CatalystJS docs
+title: CatalystJS Documentation
+description: Documentation for CatalystJS API decorators and authorization
+# theme: just-the-docs
+theme: minima
+# remote_theme: pages-themes/minimal@v0.2.0
+
+# Base URL for GitHub Pages (e.g., /repo-name for https://username.github.io/repo-name/)
+# Leave empty ("") if deploying to a custom domain or username.github.io root
+baseurl: "/"
+
+# Optional: enable for "Edit on GitHub" links
+# github: [username, repository]
+
+plugins:
+  # - jekyll-remote-theme
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+
+# Optional: set a default color scheme (dark or light)
+color_scheme: catalyst
+
+# Theme mode: "light" (default) or "dark". Users can override via the header toggle (saved in localStorage).
+default_theme: light
+
+# Mermaid diagrams — use 10.x to avoid v11 "syntax error in text" (markdown-in-labels)
+mermaid:
+  version: "10.6.1"
+
+minima:
+  skin: classic
+
+header_pages:
+  - architecture.md
+  - components.md
+  - developer-quick-start.md

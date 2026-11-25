@@ -1,0 +1,40 @@
+.VSCodeCounter
+k8.secrets.yaml
+coverage
+
+#yarn.lock should be committed on implementations
+yarn.lock
+
+*swagger.json
+configuration.*.yaml
+
+# Backup files created by scripts
+*_backup_*
+*.backup_*
+
+# dotenv environment variable files
+.env*
+!.env.sample
+!.env.example
+
+# compiled output
+dist
+node_modules
+/build
+/generated
+
+# Logs
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

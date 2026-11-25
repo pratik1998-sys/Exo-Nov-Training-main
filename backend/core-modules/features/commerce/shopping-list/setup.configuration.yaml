@@ -1,0 +1,4 @@
+id: shopping-list
+enabled: true
+plugin:
+  id: $PLUGIN_ID

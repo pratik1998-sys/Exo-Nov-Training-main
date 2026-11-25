@@ -1,0 +1,52 @@
+# Auto-create a PR when pushing to a non-default branch (if no open PR exists).
+# Title is derived from branch name (e.g. feature/EC-123-add-login -> "Feature: EC-123 add login").
+# Body is prefilled with the last commit message; the PR template will still apply when editing in the UI.
+name: Create PR on push
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - master
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Check for existing PR
+        id: check-pr
+        run: |
+          EXISTING=$(gh pr list --head "${{ github.ref_name }}" --json number --jq 'length')
+          echo "exists=$EXISTING" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Create PR
+        if: steps.check-pr.outputs.exists == '0'
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          # Derive title: strip common prefixes and turn kebab-case into Title Case
+          PREFIX=""
+          case "$BRANCH" in
+            feature/*) PREFIX="Feature: "; BRANCH="${BRANCH#feature/}" ;;
+            fix/*)     PREFIX="Fix: ";     BRANCH="${BRANCH#fix/}" ;;
+            chore/*)   PREFIX="Chore: ";   BRANCH="${BRANCH#chore/}" ;;
+            docs/*)    PREFIX="Docs: ";    BRANCH="${BRANCH#docs/}" ;;
+            refactor/*) PREFIX="Refactor: "; BRANCH="${BRANCH#refactor/}" ;;
+          esac
+          # Replace hyphens with spaces for readable title
+          TITLE=$(echo "$BRANCH" | sed 's/-/ /g')
+          TITLE="${PREFIX}${TITLE}"
+          BODY=$(git log -1 --pretty=%B)
+          gh pr create --base "${{ github.event.repository.default_branch }}" --head "${{ github.ref_name }}" --title "$TITLE" --body "$BODY"
+        env:
+          GH_TOKEN: ${{ github.token }}

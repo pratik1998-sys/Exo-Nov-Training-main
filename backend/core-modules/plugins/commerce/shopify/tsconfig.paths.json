@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@plugin-shopify": [
+      "core-modules/plugins/commerce/shopify"
+    ],
+    "@plugin-shopify/*": [
+      "core-modules/plugins/commerce/shopify/*"
+    ]
+  }
+}

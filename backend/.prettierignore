@@ -1,0 +1,6 @@
+# Jekyll / GitHub Pages docs
+docs/
+**/docs/**
+
+# Do not format: Jekyll processes front matter; formatter can break it
+**/assets/css/style.scss

@@ -1,0 +1,97 @@
+id: commerce
+configuration:
+  commerce01: commerce01_value01
+  commerce02: commerce02_value02
+features:
+  -
+    id: ec-authenticate
+    enabled: true
+    configuration:
+      key: value
+    plugins:
+      - 
+        id: $PLUGIN_ID
+        consumers:
+          - id: $CONSUMER_ID
+  -
+    id: ec-user
+    enabled: true
+    middleware:
+      - 
+        id: ec-user.profile.middleware
+        # START: Optional (forRoutes defaults to * and exclude defaults to health)
+        # enabled: true
+        # forRoutes:
+        #   - '*'
+        # excludeRoutes:
+        #   - health
+        configuration:
+          cacheTTL: 10000
+        # consumers:
+        #   - 
+        #     id: *site-2
+        #     configuration:
+        #       cacheTTL: 5000
+    plugins:
+      - 
+        id: $PLUGIN_ID
+        consumers:
+          - id: $CONSUMER_ID
+  -
+    id: ec-article
+    enabled: true
+    configuration:
+      key: value
+    plugins:
+      - 
+        id: $PLUGIN_ID
+        consumers:
+          - id: $CONSUMER_ID
+  -
+    id: cart
+    enabled: true
+    plugins:
+      - 
+        id: $PLUGIN_ID
+        consumers:
+          - id: $CONSUMER_ID
+  -
+    id: shopping-list
+    enabled: true
+    plugins:
+      -
+        id: $PLUGIN_ID
+        consumers:
+          - id: $CONSUMER_ID
+  -
+    id: category
+    enabled: true
+    plugins:
+      - 
+        id: $PLUGIN_ID
+        consumers:
+          - id: $CONSUMER_ID
+  -
+    id: order
+    enabled: true
+    plugins:
+      - 
+        id: $PLUGIN_ID
+        consumers:
+          - id: $CONSUMER_ID
+  -
+    id: purchase-history
+    enabled: true
+    plugins:
+      - 
+        id: $PLUGIN_ID
+        consumers:
+          - id: $CONSUMER_ID
+  -
+    id: product
+    enabled: true
+    plugins:
+      - 
+        id: $PLUGIN_ID
+        consumers:
+          - id: $CONSUMER_ID

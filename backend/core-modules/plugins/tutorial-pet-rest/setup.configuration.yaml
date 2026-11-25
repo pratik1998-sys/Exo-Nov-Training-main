@@ -1,0 +1,12 @@
+id: &tutorial-pet-rest tutorial-pet-rest
+name: Tutorial Pet Rest
+type: tutorial
+tokenId: catalyst-tutorial
+configuration:
+  protocol: rest
+  pagination:
+    pageSize:
+      max: 20
+      default: 10
+  test:
+    key: value

@@ -1,0 +1,325 @@
+{
+  "extends": "./core/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "paths": {
+      "@admin-features": [
+        "core/features/admin"
+      ],
+      "@admin-features/*": [
+        "core/features/admin/*"
+      ],
+      "@api-decorators": [
+        "core/foundation/api/shared/decorators"
+      ],
+      "@api-decorators/*": [
+        "core/foundation/api/shared/decorators/*"
+      ],
+      "@api-graphql": [
+        "core/foundation/api/graphql"
+      ],
+      "@api-graphql/*": [
+        "core/foundation/api/graphql/*"
+      ],
+      "@api-headers": [
+        "core/foundation/api/shared/headers"
+      ],
+      "@api-headers/*": [
+        "core/foundation/api/shared/headers/*"
+      ],
+      "@api-parameters": [
+        "core/foundation/api/shared/parameters"
+      ],
+      "@api-parameters/*": [
+        "core/foundation/api/shared/parameters/*"
+      ],
+      "@api-utilities": [
+        "core/foundation/api/shared/utilities"
+      ],
+      "@api-utilities/*": [
+        "core/foundation/api/shared/utilities/*"
+      ],
+      "@api": [
+        "core/foundation/api"
+      ],
+      "@api/*": [
+        "core/foundation/api/*"
+      ],
+      "@application": [
+        "core/foundation/application"
+      ],
+      "@application/*": [
+        "core/foundation/application/*"
+      ],
+      "@configuration": [
+        "core/foundation/configuration"
+      ],
+      "@configuration/*": [
+        "core/foundation/configuration/*"
+      ],
+      "@context": [
+        "core/foundation/context"
+      ],
+      "@context/*": [
+        "core/foundation/context/*"
+      ],
+      "@datastore": [
+        "core/foundation/datastore"
+      ],
+      "@datastore/*": [
+        "core/foundation/datastore/*"
+      ],
+      "@error": [
+        "core/foundation/error"
+      ],
+      "@error/*": [
+        "core/foundation/error/*"
+      ],
+      "@feature": [
+        "core/foundation/feature"
+      ],
+      "@feature/*": [
+        "core/foundation/feature/*"
+      ],
+      "@guards": [
+        "core/guards"
+      ],
+      "@guards/*": [
+        "core/guards/*"
+      ],
+      "@logger": [
+        "core/foundation/logger"
+      ],
+      "@logger/*": [
+        "core/foundation/logger/*"
+      ],
+      "@messenger": [
+        "core/foundation/messenger"
+      ],
+      "@messenger/*": [
+        "core/foundation/messenger/*"
+      ],
+      "@middleware-foundation": [
+        "core/foundation/middleware"
+      ],
+      "@middleware-foundation/*": [
+        "core/foundation/middleware/*"
+      ],
+      "@middleware": [
+        "core/middleware"
+      ],
+      "@middleware/*": [
+        "core/middleware/*"
+      ],
+      "@module": [
+        "core/foundation/module"
+      ],
+      "@module/*": [
+        "core/foundation/module/*"
+      ],
+      "@plugin-datasource-graphql": [
+        "core/foundation/plugin/datasource/api/graphql"
+      ],
+      "@plugin-datasource-graphql/*": [
+        "core/foundation/plugin/datasource/api/graphql/*"
+      ],
+      "@plugin-datasource-rest": [
+        "core/foundation/plugin/datasource/api/rest"
+      ],
+      "@plugin-datasource-rest/*": [
+        "core/foundation/plugin/datasource/api/rest/*"
+      ],
+      "@plugin": [
+        "core/foundation/plugin"
+      ],
+      "@plugin/*": [
+        "core/foundation/plugin/*"
+      ],
+      "@registry": [
+        "core/foundation/registry"
+      ],
+      "@registry/*": [
+        "core/foundation/registry/*"
+      ],
+      "@server": [
+        "core/foundation/server"
+      ],
+      "@server/*": [
+        "core/foundation/server/*"
+      ],
+      "@token": [
+        "core/foundation/token"
+      ],
+      "@token/*": [
+        "core/foundation/token/*"
+      ],
+      "@utilities": [
+        "core/foundation/utilities"
+      ],
+      "@utilities/*": [
+        "core/foundation/utilities/*"
+      ],
+      "@health": [
+        "core/features/health"
+      ],
+      "@health/*": [
+        "core/features/health/*"
+      ],
+      "@apps/*": [
+        "src/apps/*"
+      ],
+      "@feature-account": [
+        "core-modules/features/account"
+      ],
+      "@feature-account/*": [
+        "core-modules/features/account/*"
+      ],
+      "@feature-address": [
+        "core-modules/features/address"
+      ],
+      "@feature-address/*": [
+        "core-modules/features/address/*"
+      ],
+      "@feature-article": [
+        "core-modules/features/article"
+      ],
+      "@feature-article/*": [
+        "core-modules/features/article/*"
+      ],
+      "@feature-authenticate": [
+        "core-modules/features/authenticate"
+      ],
+      "@feature-authenticate/*": [
+        "core-modules/features/authenticate/*"
+      ],
+      "@feature-shopping-list": [
+        "core-modules/features/commerce/shopping-list"
+      ],
+      "@feature-shopping-list/*": [
+        "core-modules/features/commerce/shopping-list/*"
+      ],
+      "@feature-commerce": [
+        "core-modules/features/commerce"
+      ],
+      "@feature-commerce/*": [
+        "core-modules/features/commerce/*"
+      ],
+      "@feature-contact": [
+        "core-modules/features/contact"
+      ],
+      "@feature-contact/*": [
+        "core-modules/features/contact/*"
+      ],
+      "@feature-navigation": [
+        "core-modules/features/navigation"
+      ],
+      "@feature-navigation/*": [
+        "core-modules/features/navigation/*"
+      ],
+      "@feature-notification": [
+        "core-modules/features/notification"
+      ],
+      "@feature-notification/*": [
+        "core-modules/features/notification/*"
+      ],
+      "@feature-region": [
+        "core-modules/features/region"
+      ],
+      "@feature-region/*": [
+        "core-modules/features/region/*"
+      ],
+      "@feature-shared-models": [
+        "core-modules/features/shared/models"
+      ],
+      "@feature-shared-models/*": [
+        "core-modules/features/shared/models/*"
+      ],
+      "@feature-tutorial-pet": [
+        "core-modules/features/tutorial-pet"
+      ],
+      "@feature-tutorial-pet/*": [
+        "core-modules/features/tutorial-pet/*"
+      ],
+      "@feature-ui-layout": [
+        "core-modules/features/ui-layout"
+      ],
+      "@feature-ui-layout/*": [
+        "core-modules/features/ui-layout/*"
+      ],
+      "@feature-user": [
+        "core-modules/features/user"
+      ],
+      "@feature-user/*": [
+        "core-modules/features/user/*"
+      ],
+      "@plugin-adobe-aem": [
+        "core-modules/plugins/adobe-aem"
+      ],
+      "@plugin-adobe-aem/*": [
+        "core-modules/plugins/adobe-aem/*"
+      ],
+      "@plugin-catalyst": [
+        "core-modules/plugins/catalyst"
+      ],
+      "@plugin-catalyst/*": [
+        "core-modules/plugins/catalyst/*"
+      ],
+      "@plugin-adobe-commerce": [
+        "core-modules/plugins/commerce/adobe-commerce"
+      ],
+      "@plugin-adobe-commerce/*": [
+        "core-modules/plugins/commerce/adobe-commerce/*"
+      ],
+      "@plugin-commercetools": [
+        "core-modules/plugins/commerce/commercetools"
+      ],
+      "@plugin-commercetools/*": [
+        "core-modules/plugins/commerce/commercetools/*"
+      ],
+      "@plugin-hcl-commerce": [
+        "core-modules/plugins/commerce/hcl-commerce"
+      ],
+      "@plugin-hcl-commerce/*": [
+        "core-modules/plugins/commerce/hcl-commerce/*"
+      ],
+      "@plugin-sap-commerce": [
+        "core-modules/plugins/commerce/sap-commerce"
+      ],
+      "@plugin-sap-commerce/*": [
+        "core-modules/plugins/commerce/sap-commerce/*"
+      ],
+      "@plugin-shopify": [
+        "core-modules/plugins/commerce/shopify"
+      ],
+      "@plugin-shopify/*": [
+        "core-modules/plugins/commerce/shopify/*"
+      ],
+      "@plugin-tutorial-pet-db": [
+        "core-modules/plugins/tutorial-pet-db"
+      ],
+      "@plugin-tutorial-pet-db/*": [
+        "core-modules/plugins/tutorial-pet-db/*"
+      ],
+      "@plugin-tutorial-pet-graphql": [
+        "core-modules/plugins/tutorial-pet-graphql"
+      ],
+      "@plugin-tutorial-pet-graphql/*": [
+        "core-modules/plugins/tutorial-pet-graphql/*"
+      ],
+      "@plugin-tutorial-pet-rest": [
+        "core-modules/plugins/tutorial-pet-rest"
+      ],
+      "@plugin-tutorial-pet-rest/*": [
+        "core-modules/plugins/tutorial-pet-rest/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/dist/**",
+    "vitest.config.mts",
+    "core/vitest.config.ts"
+  ]
+}

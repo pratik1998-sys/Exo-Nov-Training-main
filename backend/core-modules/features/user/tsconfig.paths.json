@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-user": [
+            "core-modules/features/user"
+        ],
+        "@feature-user/*": [
+            "core-modules/features/user/*"
+        ]
+    }
+}

@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@feature-notification": [
+      "core-modules/features/notification"
+    ],
+    "@feature-notification/*": [
+      "core-modules/features/notification/*"
+    ]
+  }
+}

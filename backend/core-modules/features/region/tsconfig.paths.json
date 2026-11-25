@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-region": [
+            "core-modules/features/region"
+        ],
+        "@feature-region/*": [
+            "core-modules/features/region/*"
+        ]
+    }
+}

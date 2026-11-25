@@ -1,0 +1,5 @@
+id: &$DATABASE_ID $DATABASE_ID
+type: postgres
+configuration:
+  test:
+    key1: value1

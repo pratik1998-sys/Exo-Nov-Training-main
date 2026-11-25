@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@plugin-tutorial-pet-db": [
+            "core-modules/plugins/tutorial-pet-db"
+        ],
+        "@plugin-tutorial-pet-db/*": [
+            "core-modules/plugins/tutorial-pet-db/*"
+        ]
+    }
+}

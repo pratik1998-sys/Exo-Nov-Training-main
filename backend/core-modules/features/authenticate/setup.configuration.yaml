@@ -1,0 +1,4 @@
+id: authenticate
+enabled: true
+plugin:
+  id: $PLUGIN_ID

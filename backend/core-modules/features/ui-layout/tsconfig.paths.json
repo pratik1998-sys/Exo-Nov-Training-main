@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-ui-layout": [
+            "core-modules/features/ui-layout"
+        ],
+        "@feature-ui-layout/*": [
+            "core-modules/features/ui-layout/*"
+        ]
+    }
+}

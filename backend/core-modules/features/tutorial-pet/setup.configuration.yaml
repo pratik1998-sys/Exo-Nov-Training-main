@@ -1,0 +1,53 @@
+id: tutorial-pet
+configuration:
+  key: value
+features:
+  -
+    id: user
+    enabled: true
+    plugins:
+      - 
+        id: *tutorial-pet-rest
+        configuration:
+          newKey: newValue
+          protocol: rest-test
+          pagination:
+            pageSize:
+              max: 10
+              default: 5
+    middleware:
+      - 
+        id: user.profile.middleware
+        # START: Optional (forRoutes defaults to * and exclude defaults to health)
+        # enabled: true
+        # forRoutes:
+        #   - '*'
+        # excludeRoutes:
+        #   - health
+        configuration:
+          cacheTTL: 10000
+        # consumers:
+        #   - 
+        #     id: *site-2
+        #     configuration:
+        #       cacheTTL: 5000
+  -
+    id: pet
+    enabled: true
+    plugins:
+      - id: *tutorial-pet-rest
+  -
+    id: veterinarian
+    enabled: true
+    plugins:
+      - id: *tutorial-pet-rest
+  -
+    id: pharmacy
+    enabled: true
+    plugins:
+      - id: *tutorial-pet-rest
+  -
+    id: prescription
+    enabled: true
+    plugins:
+      - id: *tutorial-pet-rest

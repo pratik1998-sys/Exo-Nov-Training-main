@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@plugin-sap-commerce": [
+      "core-modules/plugins/commerce/sap-commerce"
+    ],
+    "@plugin-sap-commerce/*": [
+      "core-modules/plugins/commerce/sap-commerce/*"
+    ]
+  }
+}

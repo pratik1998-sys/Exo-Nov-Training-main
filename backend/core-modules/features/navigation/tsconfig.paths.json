@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-navigation": [
+            "core-modules/features/navigation"
+        ],
+        "@feature-navigation/*": [
+            "core-modules/features/navigation/*"
+        ]
+    }
+}

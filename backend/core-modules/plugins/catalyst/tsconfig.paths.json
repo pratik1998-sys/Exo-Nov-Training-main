@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@plugin-catalyst": [
+      "core-modules/plugins/catalyst"
+    ],
+    "@plugin-catalyst/*": [
+      "core-modules/plugins/catalyst/*"
+    ]
+  }
+}

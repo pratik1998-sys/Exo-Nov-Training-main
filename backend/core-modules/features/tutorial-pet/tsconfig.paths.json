@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-tutorial-pet": [
+            "core-modules/features/tutorial-pet"
+        ],
+        "@feature-tutorial-pet/*": [
+            "core-modules/features/tutorial-pet/*"
+        ]
+    }
+}

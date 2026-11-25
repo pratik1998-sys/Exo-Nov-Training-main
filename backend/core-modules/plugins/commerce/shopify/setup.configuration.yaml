@@ -1,0 +1,31 @@
+id: &shopify shopify
+name: Shopify
+type: commerce
+configuration:
+  tokenPurseId: shopify
+variants:
+  -
+    id: 2025-10
+    configuration:
+      apiVersion: 2025-10
+    consumerIds:
+      - *site-3
+  -
+    id: 2025-07
+    consumerIds:
+      - *site-4
+consumers:
+  -
+    id: *site-3
+    pluginDefaultConsumer: true
+    configuration:
+      menus:
+        header:
+          id: main-menu
+          depth: 4
+        footer:
+          id: footer
+          depth: 3
+        rootCategory:
+          id: main-menu:Catalog
+          depth: 4

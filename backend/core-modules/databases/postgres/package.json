@@ -1,0 +1,11 @@
+{
+    "name": "catalystjs-postgres",
+    "version": "1.0.0",
+    "description": "",
+    "author": "mjvoss",
+    "private": true,
+    "license": "UNLICENSED",
+    "dependencies": {
+        "pg": "^8.13.1"
+    }
+}

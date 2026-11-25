@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@plugin-hcl-commerce": [
+      "core-modules/plugins/commerce/hcl-commerce"
+    ],
+    "@plugin-hcl-commerce/*": [
+      "core-modules/plugins/commerce/hcl-commerce/*"
+    ]
+  }
+}

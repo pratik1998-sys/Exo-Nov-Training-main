@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-commerce": [
+            "core-modules/features/commerce"
+        ],
+        "@feature-commerce/*": [
+            "core-modules/features/commerce/*"
+        ]
+    }
+}

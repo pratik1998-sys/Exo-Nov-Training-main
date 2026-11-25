@@ -1,0 +1,90 @@
+  -
+    id: notification
+    enabled: true
+    plugins:
+      -
+        id: *catalyst
+        consumers:
+          - id: $CONSUMER_ID
+            configuration:
+              notifications:
+                - id: FREE_SHIPPING
+                  description:
+                    - locale: *locale-en-us
+                      value: Free Shipping on orders over $100
+                    - locale: *locale-es-us
+                      value: Envío Gratis en pedidos sobre $100
+                - id: SUMMER_SALE
+                  description:
+                    - locale: *locale-en-us
+                      value: Shop the summer sale while supplies last
+                    - locale: *locale-es-us
+                      value: Compra la venta de verano mientras haya existencias
+  -
+    id: navigation
+    enabled: true
+    plugins:
+      - 
+        id: *catalyst
+        consumers:
+          - id: $CONSUMER_ID
+            configuration:
+              mainNavigation:
+                - id: SHOP
+                  url: /shop
+                  label:
+                    - locale: *locale-en-us
+                      value: Shop
+                    - locale: *locale-es-us
+                      value: Tienda
+                  
+                - id: DEALS
+                  url: /deals
+                  label:
+                    - locale: *locale-en-us
+                      value: Deals
+                    - locale: *locale-es-us
+                      value: Ofertas
+                - id: NEW
+                  url: /new-featured
+                  label:
+                    - locale: *locale-en-us
+                      value: New & Featured
+                    - locale: *locale-es-us
+                      value: Nuevo & Destacado
+                - id: DELIVERY
+                  url: /delivery-pickup
+                  label:
+                    - locale: *locale-en-us
+                      value: Delivery & Pickup
+                    - locale: *locale-es-us
+                      value: Entrega & Recogida     
+              quickNavigation:
+                - id: WEEKLY_AD
+                  url: /weekly-ad
+                  label:
+                    - locale: *locale-en-us
+                      value: Weekly Ad
+                    - locale: *locale-es-us
+                      value: Anuncio Semanal
+                - id: ARTICLES
+                  url: /articles
+                  label:
+                    - locale: *locale-en-us
+                      value: Articles
+                    - locale: *locale-es-us
+                      value: Artículos
+                - id: CONTACT_US
+                  url: /contact-us
+                  label:
+                    - locale: *locale-en-us
+                      value: Contact Us
+                    - locale: *locale-es-us
+                      value: Contacto
+                - id: STORE_LOCATOR
+                  url: /store-locator
+                  label:
+                    - locale: *locale-en-us
+                      value: Store Locator
+                    - locale: *locale-es-us
+                      value: Locator de Tiendas

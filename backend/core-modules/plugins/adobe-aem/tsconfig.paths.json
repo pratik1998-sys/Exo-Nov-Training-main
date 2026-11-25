@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@plugin-adobe-aem": [
+      "core-modules/plugins/adobe-aem"
+    ],
+    "@plugin-adobe-aem/*": [
+      "core-modules/plugins/adobe-aem/*"
+    ]
+  }
+}

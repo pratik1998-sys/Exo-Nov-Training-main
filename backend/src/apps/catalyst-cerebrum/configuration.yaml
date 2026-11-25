@@ -1,0 +1,159 @@
+---
+appName: catalyst-cerebrum
+swaggerPath: swagger
+graphqlPath: graphql
+doAPIUserAuthorizationByDefault: true
+doAPIAccessControl: false
+appBootDebug:
+  logEntities: true
+  logSerializedGraph: true
+cors:
+  credentials: true
+  origin:
+    - http://localhost:3000
+    - http://localhost:3001
+logger: winston
+loggerMaskedFields:
+  - password
+  - clientId
+  - clientSecret
+  - cert
+  - tls
+  - ca
+  - certificate
+  - access_token
+  - refresh_token
+locales:
+  - id: &locale-en-us en-US
+    default: true
+  - id: &locale-fr-us fr-US
+isAdminAppEnabled: false
+consumers:
+  -
+    id: &site-1 site-1
+    enabled: true
+    default: true
+    configuration:
+      test: 'value'
+  # Shopify-backed caller. Send header `x-consumer: shopify-app` to be served by Shopify.
+  -
+    id: &shopify-app shopify-app
+    enabled: true
+# START - Plugin Definitions
+#   Define and configure plugins that are used. Set the plugin to an anchor (variable) to be referenced in the
+#   features block. This allows for a one stop shop for understanding a plugin global configuration and
+#   avoiding string/configuration duplication in features block
+#   NOTE: any feature level plugin configuration key defined that is also present in the here in
+#   plugin.globalConfiguration will take precedence (ie this value will be overridden at the feature level)
+plugins:
+  -
+    id: &catalyst_synthetic catalyst-synthetic
+  -
+    id: &catalyst catalyst
+    consumers:
+      - id: *site-1
+  -
+    id: &catalyst-static catalyst-static
+    name: Catalyst Static
+    consumers:
+      - id: *site-1
+  -
+    id: &shopify shopify
+    name: Shopify
+    type: commerce
+    configuration:
+      tokenPurseId: shopify
+    variants:
+      - id: 2025-10
+        configuration:
+          apiVersion: 2025-10
+        consumerIds:
+          - *shopify-app
+    consumers:
+      - id: *shopify-app
+        pluginDefaultConsumer: true
+        configuration:
+          apiVersion: 2025-10
+          # Shopify MENU HANDLES - only used once the category/navigation features are enabled.
+          menus:
+            header:
+              id: main-menu
+              depth: 4
+            footer:
+              id: footer
+              depth: 3
+            rootCategory:
+              id: main-menu:Catalog
+              depth: 4
+#END - Plugin Definitions
+features:
+  -
+    id: user
+    enabled: false
+  -
+    id: authenticate
+    enabled: false
+  -
+    id: address
+    enabled: false
+  -
+    id: region
+    enabled: false
+  -
+    id: article
+    enabled: false
+  -
+    id: notification
+    enabled: false
+  -
+    id: navigation
+    enabled: false
+  -
+    id: product
+    enabled: true
+    plugins:
+      # -
+      #   id: *catalyst-static
+      #   consumers:
+      #     - id: *site-1
+      -
+        id: *shopify
+        consumers:
+          - id: *shopify-app
+  -
+    id: cart
+    enabled: true
+    plugins:
+      -
+        id: *shopify
+        consumers:
+          - id: *shopify-app
+  # Bootstraps the Shopify session the other commerce features rely on.
+  -
+    id: ec-authenticate
+    enabled: true
+    plugins:
+      -
+        id: *shopify
+        consumers:
+          - id: *shopify-app
+  -
+    id: health
+    enabled: true
+    standalone: true
+adminFeatures:
+  -
+    id: admin-datasource
+    enabled: true
+    plugin: 
+      id: *catalyst
+  -
+    id: admin-registry
+    enabled: true
+    plugin: 
+      id: *catalyst
+  -
+    id: admin-messenger
+    enabled: true
+    plugin: 
+      id: *catalyst

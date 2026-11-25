@@ -1,0 +1,43 @@
+{
+  "name": "catalystjs",
+  "private": true,
+  "scripts": {
+    "install:core": "node core/scripts/install-core.js",
+    "build": "yarn run generate:tsconfig && nest build",
+    "build:docker": "nest build -p tsconfig.build.docker.json",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\" \"packages/**/*.ts\"",
+    "generate:tsconfig": "node core/scripts/generate-tsconfig.js",
+    "generate:nest-cli": "node core/scripts/generate-nest-cli.js",
+    "generate:docs": "node core/scripts/generate-docs.js",
+    "generate:feature:index": "node core/scripts/generate-feature-index.js",
+    "generate:plugin:index": "node core/scripts/generate-plugin-index.js",
+    "install:plugin": "node core/scripts/install-plugin.js",
+    "install:feature": "node core/scripts/install-feature.js",
+    "install:database": "node core/scripts/install-database.js",
+    "start": "node core/scripts/start.js",
+    "start:dev": "nest start --watch --entryFile main.js",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "start:wiki": "yarn run generate:docs &&cd docs && bundle install && bundle exec jekyll serve",
+    "lint": "eslint \"{src,packages}/**/*.ts\" --fix",
+    "test": "vitest run --config vitest.config.mts --reporter=verbose",
+    "test:watch": "vitest --config vitest.config.mts",
+    "test:cov": "vitest run --coverage --config vitest.config.mts",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/vitest run --config vitest.config.mts",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:run": "node core/scripts/run-tests.js",
+    "prepare": "husky",
+    "docker:build": "node core/scripts/docker-build.js",
+    "postinstall": "node core/scripts/patch-nestjs-fastify-reply.js"
+  },
+  "workspaces": [
+    "core",
+    "core-modules/**",
+    "src/core-staging/**",
+    "src/apps/**"
+  ],
+  "devDependencies": {
+    "vitest": "^4.1.10",
+    "vite-tsconfig-paths": "^6.1.1"
+  }
+}

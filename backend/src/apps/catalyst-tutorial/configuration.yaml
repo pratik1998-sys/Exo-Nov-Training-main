@@ -1,0 +1,193 @@
+---
+appName: catalyst-tutorial
+swaggerPath: swagger
+graphqlPath: graphql
+doAPIUserAuthorizationByDefault: true
+doAPIAccessControl: true
+cors:
+  credentials: true
+  origin:
+    - http://localhost:3000
+    - http://localhost:3001
+logger: winston
+appBootDebug:
+  logEntities: true
+  logSerializedGraph: true
+loggerMaskedFields:
+  - password
+  - clientId
+  - clientSecret
+  - cert
+  - tls
+  - ca
+  - certificate
+  - access_token
+  - refresh_token
+locales:
+  - id: &locale-en-us en-US
+    default: true
+  - id: &locale-fr-us fr-US
+isAdminAppEnabled: false
+consumers:
+  -
+    id: &site-1 site-1
+    enabled: true
+    default: true
+    configuration:
+      test: 'value'
+# databases: 
+#   -
+#     id: &db-cerebrum_tutorial_pet cerebrum_tutorial_pet
+#     type: postgres
+#     configuration:
+#       test:
+#         key1: value1
+# START - Plugin Definitions
+#   Define and configure plugins that are used. Set the plugin to an anchor (variable) to be referenced in the
+#   features block. This allows for a one stop shop for understanding a plugin global configuration and
+#   avoiding string/configuration duplication in features block
+#   NOTE: any feature level plugin configuration key defined that is also present in the here in
+#   plugin.globalConfiguration will take precedence (ie this value will be overridden at the feature level)
+plugins:
+  -
+    id: &catalyst_synthetic catalyst-synthetic
+  -
+    id: &catalyst catalyst
+  # -
+  #   id: &tutorial-pet-db tutorial-pet-db
+  #   databases:
+  #     - id: *db-cerebrum_tutorial_pet
+  #       primary: true
+  #       configuration:
+  #         test:
+  #           key1: value1.1
+  #       consumers:
+  #       - id: *site-1
+  -
+    id: &tutorial-pet-rest tutorial-pet-rest
+    name: Tutorial Pet REST
+    type: tutorial
+    tokenId: catalyst-tutorial
+    configuration:
+      protocol: rest
+      pagination:
+        pageSize:
+          max: 20
+          default: 10
+      test:
+        key: value
+  -
+    id: &tutorial-pet-graphql tutorial-pet-graphql
+    tokenId: catalyst-tutorial
+    configuration:
+      protocol: graphql
+      test:
+        key: value
+#END - Plugin Definitions
+features:
+  -
+    id: tutorial-pet
+    configuration:
+      key: value
+    features:
+      -
+        id: user
+        enabled: true
+        plugins:
+          - 
+            id: *tutorial-pet-rest
+            configuration:
+              newKey: newValue
+              protocol: rest-test
+              pagination:
+                pageSize:
+                  max: 10
+                  default: 5
+        middleware:
+          - 
+            id: user.profile.middleware
+            # START: Optional (forRoutes defaults to * and exclude defaults to health)
+            # enabled: true
+            # forRoutes:
+            #   - '*'
+            # excludeRoutes:
+            #   - health
+            configuration:
+              cacheTTL: 10000
+            # consumers:
+            #   - 
+            #     id: *site-2
+            #     configuration:
+            #       cacheTTL: 5000
+      -
+        id: pet
+        enabled: true
+        plugins:
+          - id: *tutorial-pet-rest
+      -
+        id: veterinarian
+        enabled: true
+        plugins:
+          - id: *tutorial-pet-rest
+      -
+        id: pharmacy
+        enabled: true
+        plugins:
+          - id: *tutorial-pet-rest
+      -
+        id: prescription
+        enabled: true
+        plugins:
+          - id: *tutorial-pet-rest
+  -
+    id: authenticate
+    enabled: true
+    operations:
+      - id: authenticate
+        description: Authenticate the user - From Configuration.yaml
+        summary: Authenticate the user summary - From Configuration.yaml
+    plugins:
+      - id: *tutorial-pet-rest
+  -
+    id: address
+    enabled: false
+    plugins:
+      - id: *tutorial-pet-rest
+  -
+    id: region
+    enabled: false
+  -
+    id: health
+    enabled: true
+    standalone: true
+adminFeatures:
+  -
+    id: admin-datasource
+    enabled: false
+    plugin: 
+      id: *catalyst
+  -
+    id: admin-registry
+    enabled: false
+    plugin: 
+      id: *catalyst
+  -
+    id: admin-messenger
+    enabled: false
+    plugin: 
+      id: *catalyst
+# middleware:
+#   - 
+#     id: ec-authenticate.test.middleware
+#     enabled: true
+#     forRoutes:
+#       - '*'
+#     excludeRoutes:
+#       - health
+#     configuration:
+#       cacheTTL: 10000
+#     consumers:
+#       - 
+#         id: *site-2
+#         configuration:
+#           cacheTTL: 5000

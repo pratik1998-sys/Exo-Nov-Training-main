@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@plugin-adobe-commerce": [
+      "core-modules/plugins/commerce/adobe-commerce"
+    ],
+    "@plugin-adobe-commerce/*": [
+      "core-modules/plugins/commerce/adobe-commerce/*"
+    ]
+  }
+}

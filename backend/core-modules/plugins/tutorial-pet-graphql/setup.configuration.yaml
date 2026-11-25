@@ -1,0 +1,6 @@
+id: &tutorial-pet-graphql tutorial-pet-graphql
+tokenId: catalyst-tutorial
+configuration:
+  protocol: graphql
+  test:
+    key: value

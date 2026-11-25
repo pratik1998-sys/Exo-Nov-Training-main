@@ -1,0 +1,164 @@
+---
+appName: catalyst-tutorial-saas
+swaggerPath: swagger
+graphqlPath: graphql
+doAPIUserAuthorizationByDefault: false
+doAPIAccessControl: true
+logger: winston
+cors:
+  credentials: true
+  origin:
+    - http://localhost:3000
+    - http://localhost:3001
+appBootDebug:
+  logEntities: true
+  logSerializedGraph: true
+loggerMaskedFields:
+  - password
+  - clientId
+  - clientSecret
+  - cert
+  - tls
+  - ca
+  - certificate
+  - access_token
+  - refresh_token
+locales:
+  - id: &locale-en-us en-US
+    default: true
+  - id: &locale-fr-us fr-US
+isAdminAppEnabled: false
+consumers:
+  -
+    id: &site-1 site-1
+    enabled: true
+    default: true
+    configuration:
+      test: 'value'
+databases: 
+  -
+    id: &db-cerebrum_tutorial_pet cerebrum_tutorial_pet
+    type: postgres
+    configuration:
+      test:
+        key1: value1
+# START - Plugin Definitions
+#   Define and configure plugins that are used. Set the plugin to an anchor (variable) to be referenced in the
+#   features block. This allows for a one stop shop for understanding a plugin global configuration and
+#   avoiding string/configuration duplication in features block
+#   NOTE: any feature level plugin configuration key defined that is also present in the here in
+#   plugin.globalConfiguration will take precedence (ie this value will be overridden at the feature level)
+plugins:
+  -
+    id: &catalyst_synthetic catalyst-synthetic
+  -
+    id: &catalyst catalyst
+  -
+    id: &tutorial-pet-db tutorial-pet-db
+    tokenId: catalyst-tutorial
+    databases:
+      - id: *db-cerebrum_tutorial_pet
+        primary: true
+        configuration:
+          test:
+            key1: value1.1
+        consumers:
+          - id: *site-1
+#END - Plugin Definitions
+features:
+  -
+    id: tutorial
+    configuration:
+      key: value
+    features:
+      -
+        id: user
+        enabled: true
+        plugins:
+          - id: *tutorial-pet-db
+            consumers:
+            - id: *site-1
+        middleware:
+          - 
+            id: user.profile.middleware
+            # START: Optional (forRoutes defaults to * and exclude defaults to health)
+            # enabled: true
+            # forRoutes:
+            #   - '*'
+            # excludeRoutes:
+            #   - health
+            configuration:
+              cacheTTL: 10000
+            # consumers:
+            #   - 
+            #     id: *site-2
+            #     configuration:
+            #       cacheTTL: 5000
+      -
+        id: pet
+        enabled: true
+        plugins:
+          - id: *tutorial-pet-db
+      -
+        id: veterinarian
+        enabled: true
+        plugins:
+          - id: *tutorial-pet-db
+      -
+        id: pharmacy
+        enabled: true
+        plugins:
+          - id: *tutorial-pet-db
+      -
+        id: prescription
+        enabled: true
+        plugins:
+          - id: *tutorial-pet-db
+  -
+    id: authenticate
+    enabled: true
+    plugins:
+      - id: *tutorial-pet-db
+  -
+    id: address
+    enabled: true
+    plugins:
+      - id: *tutorial-pet-db
+  -
+    id: region
+    enabled: false
+  -
+    id: health
+    enabled: true
+    standalone: true
+adminFeatures:
+  -
+    id: admin-datasource
+    enabled: true
+    plugin: 
+      id: *catalyst
+  -
+    id: admin-registry
+    enabled: true
+    plugin: 
+      id: *catalyst
+  -
+    id: admin-messenger
+    enabled: true
+    plugin: 
+      id: *catalyst
+# middleware:
+#   - 
+#     id: ec-authenticate.test.middleware
+#     enabled: true
+#     forRoutes:
+#       - '*'
+#     excludeRoutes:
+#       - health
+#     configuration:
+#       cacheTTL: 10000
+#     consumers:
+#       - 
+#         id: *site-2
+#         configuration:
+#           cacheTTL: 5000

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+
+  {%- include head.html -%}
+
+  <body class="{% if site.default_theme == 'dark' %}theme-dark{% endif %}">
+    <span id="default-theme" data-theme="{{ site.default_theme | default: 'light' }}" hidden aria-hidden="true"></span>
+
+    {%- include header.html -%}
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        {{ content }}
+      </div>
+    </main>
+
+    {%- include footer.html -%}
+
+    {%- if site.mermaid -%}
+      {%- include components/mermaid.html -%}
+    {%- endif -%}
+
+    <script src="{{ '/assets/js/theme-toggle.js' | relative_url }}"></script>
+  </body>
+
+</html>

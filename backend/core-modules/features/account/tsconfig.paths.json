@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-account": [
+            "core-modules/features/account"
+        ],
+        "@feature-account/*": [
+            "core-modules/features/account/*"
+        ]
+    }
+}

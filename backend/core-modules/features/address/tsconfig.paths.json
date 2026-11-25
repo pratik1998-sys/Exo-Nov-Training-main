@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-address": [
+            "core-modules/features/address"
+        ],
+        "@feature-address/*": [
+            "core-modules/features/address/*"
+        ]
+    }
+}

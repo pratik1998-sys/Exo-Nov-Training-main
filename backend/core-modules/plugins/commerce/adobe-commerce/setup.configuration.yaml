@@ -1,0 +1,20 @@
+id: &adobe-commerce adobe-commerce
+name: Adobe Commerce
+type: commerce
+configuration:
+  test: value
+  accessTokenTTL: 120000
+  productAttributes: 
+    - $CUSTOM_ATTRIBUTE_01
+    - $CUSTOM_ATTRIBUTE_02
+  productRangeFacets:
+    - $PRODUCT_RANGE_VALUE_FACET_01
+  topCategoriesDepth: 3
+consumers:
+  -
+    id: $CONSUMER_ID
+    configuration:
+      locales:
+        $LOCALE :
+          storeId: $AC_STORE_ID
+          rootCategory: $ROOT_CATEGORY_SLUG

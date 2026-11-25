@@ -1,0 +1,11 @@
+{
+  "name": "catalystjs-adobe-aem",
+  "version": "1.0.0",
+  "description": "",
+  "author": "mjvoss",
+  "private": true,
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@adobe/jwt-auth": "^2.0.0"
+  }
+}

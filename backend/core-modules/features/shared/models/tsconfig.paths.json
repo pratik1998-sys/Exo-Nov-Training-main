@@ -1,0 +1,10 @@
+{
+    "paths": {
+        "@feature-shared-models": [
+            "core-modules/features/shared/models"
+        ],
+        "@feature-shared-models/*": [
+            "core-modules/features/shared/models/*"
+        ]
+    }
+}

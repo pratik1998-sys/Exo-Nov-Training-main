@@ -1,0 +1,4 @@
+id: ui-layout
+enabled: true
+plugin:
+  id: $PLUGIN_ID

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+  name: "{{  .Chart.Name }}-admin-service"
+  namespace: {{ .Values.organization }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  type: ClusterIP
+  ports:  
+    - name: http
+      port: 80
+      targetPort: {{ .Values.adminPort }}
+      protocol: TCP
+  selector:
+    app: "{{  .Chart.Name }}"

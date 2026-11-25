@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "compilerOptions": {
+    "builder": "tsc",
+    "deleteOutDir": true,
+    "watchAssets": true,
+    "assets": [
+      {
+        "include": "**/*.yaml",
+        "outDir": "dist",
+        "watchAssets": true
+      },
+      {
+        "include": "**/.env*",
+        "outDir": "dist",
+        "watchAssets": true
+      }
+    ]
+  }
+}

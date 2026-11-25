@@ -1,0 +1,15 @@
+id: &adobe-aem adobe-aem
+type: cms
+configuration:
+  isBasicAuth: true
+  headerContentFragmentId: header
+  pathContentFragment: /content/dam/dxp/:appId/:siteId/cf
+  pathAppContentFragment: /content/dam/dxp/:appId/cf
+  graphqlPath_Commons: /graphql/execute.json/commons
+consumers:
+  -
+    id: $CONSUMER_ID
+    configuration:
+      pathRoot: /content/dxp/:appId
+    aemAppId: $AEM_APP_ID
+    aemSiteId: $AEM_SITE_ID

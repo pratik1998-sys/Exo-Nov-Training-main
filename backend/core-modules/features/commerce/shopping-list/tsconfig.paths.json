@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@feature-shopping-list": [
+      "core-modules/features/commerce/shopping-list"
+    ],
+    "@feature-shopping-list/*": [
+      "core-modules/features/commerce/shopping-list/*"
+    ]
+  }
+}

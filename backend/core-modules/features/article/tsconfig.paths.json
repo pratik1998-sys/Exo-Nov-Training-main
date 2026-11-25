@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@feature-article": [
+      "core-modules/features/article"
+    ],
+    "@feature-article/*": [
+      "core-modules/features/article/*"
+    ]
+  }
+}

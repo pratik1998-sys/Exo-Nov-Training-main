@@ -1,0 +1,29 @@
+id: &commercetools commercetools
+name: Commercetools
+type: commerce
+configuration:
+  doDataErasureOnDelete: true
+consumers:
+  -
+    id: $CONSUMER_ID
+    configuration:
+      storeId: $CT_STORE_ID
+      orderNumberPrefix: $ORDER_NUMBER_PREFIX
+      #Optional - Use if a "catalog" resides under a specific top category
+      rootCategory: $ROOT_CATEGORY
+      #Depth of categories to fetch on navigation service
+      navigationDepthCategories: $NAVIGATION_DEPTH_CATEGORIES
+      #Is language specific data stored in lanuage (en) or locale (en-us) fields
+      isLocaleAware: $IS_LOCALE_AWARE
+      #Filter products by the store attribute - This is for when applying a store to a product via attributes, and really is not used
+      productFilterByStoreAttributeId: $PRODUCT_FILTER_BY_STORE_ATTRIBUTE_ID
+      #If a single shopping list per user, set the name of the shopping list to use in the system.
+      #If support for multiple shopping lists per user, do not include this configuration.
+      shoppingListName: $SHOPPING_LIST_NAME
+      defaultCurrency: $DEFAULT_CURRENCY
+      disableTax: $DISABLE_TAX
+      isShippingMethodsCartSpecific: $IS_SHIPPING_METHODS_CART_SPECIFIC
+      # UI Entities such as Carousels Should not know about actual attribute ids, just the generalized name. This handles that mapping
+      productTags:
+        - id: $INBOUD_TAG_ID
+          attribute: $MAPPED_COMMERCE_ATTRIBUTE_NAME

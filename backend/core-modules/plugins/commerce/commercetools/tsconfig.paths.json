@@ -1,0 +1,10 @@
+{
+  "paths": {
+    "@plugin-commercetools": [
+      "core-modules/plugins/commerce/commercetools"
+    ],
+    "@plugin-commercetools/*": [
+      "core-modules/plugins/commerce/commercetools/*"
+    ]
+  }
+}

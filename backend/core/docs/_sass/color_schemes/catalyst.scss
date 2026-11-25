@@ -1,0 +1,31 @@
+$content-width: 75rem;
+/* 1200px at 16px base – theme uses rem for layout math */
+$link-color: $blue-300;
+
+
+// $body-background-color: #1e1e1e;
+
+// .side-bar {
+//     background-color: #181818 !important;
+//     border-right: 0 !important;
+// }
+
+// body {
+//     color: #ffffff !important;
+// }
+
+// h1,
+// h2,
+// h3,
+// h4,
+// h5,
+// h6,
+// #toctitle {
+//     color: #ffffff !important;
+// }
+
+:not(pre, figure)>code {
+    // background-color: #5c5962 !important; // Inline code background
+    // color: #f8f8f2 !important; // Inline code font color
+    color: #c08a6f !important; // Inline code font color
+}

@@ -1,0 +1,4 @@
+id: article
+enabled: true
+plugin:
+  id: $PLUGIN_ID

@@ -1,0 +1,10 @@
+id: &tutorial-pet-db tutorial-pet-db
+tokenId: catalyst-tutorial
+databases:
+  - id: $DATABASE_ID
+    primary: true
+    configuration:
+      test:
+        key1: value1.1
+    consumers:
+    - id: $CONSUMER_ID
