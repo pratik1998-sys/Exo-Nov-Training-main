@@ -30,6 +30,9 @@
     "docker:build": "node core/scripts/docker-build.js",
     "postinstall": "node core/scripts/patch-nestjs-fastify-reply.js"
   },
+  "resolutions": {
+    "@nestjs/common": "12.6.0"
+  },
   "workspaces": [
     "core",
     "core-modules/**",
