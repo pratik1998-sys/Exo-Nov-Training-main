@@ -2,16 +2,22 @@ import { RequestContext } from "@context/request";
 import { Product, ProductFilterInput, ProductResultSet, ProductService } from "@feature-commerce/product";
 import { PaginationInput, SortByInput } from "@feature/models";
 import { BasePluginServiceImpl } from "@plugin/service";
+import { FindOptionsWhere, ILike, In, Repository } from "typeorm";
 
-import { CatalystStaticProductData, CatalystStaticProductRecord } from "./catalyst-static.product.data";
+import { CatalystStaticProductData } from "./catalyst-static.product.data";
+import { CatalystStaticProductEntity } from "./entities/catalyst-static.product.entity";
 
 export class CatalystStaticProductServiceImpl extends BasePluginServiceImpl implements ProductService {
-    protected toProduct(record: CatalystStaticProductRecord): Product {
+    protected getProductRepository(): Repository<CatalystStaticProductEntity> {
+        return this.getRepository<Repository<CatalystStaticProductEntity>>(CatalystStaticProductEntity);
+    }
+
+    protected toProduct(record: CatalystStaticProductEntity): Product {
         const currency = CatalystStaticProductData.currency;
 
         return {
-            id: record.id,
-            identifier: record.id,
+            id: record.identifier,
+            identifier: record.identifier,
             slug: record.slug,
             sku: record.sku,
             name: record.name,
@@ -28,9 +34,15 @@ export class CatalystStaticProductServiceImpl extends BasePluginServiceImpl impl
     }
 
     async getProduct(id: string, identifier: string, slug: string, requestContext: RequestContext, context?: any): Promise<Product> {
-        const record = CatalystStaticProductData.products.find(
-            (p) => (id && p.id === id) || (identifier && (p.id === identifier || p.sku === identifier)) || (slug && p.slug === slug),
-        );
+        const where: FindOptionsWhere<CatalystStaticProductEntity>[] = [];
+
+        if (id) where.push({ identifier: id });
+        if (identifier) where.push({ identifier }, { sku: identifier });
+        if (slug) where.push({ slug });
+
+        if (!where.length) return null;
+
+        const record = await this.getProductRepository().findOne({ where });
 
         return record ? this.toProduct(record) : null;
     }
@@ -43,31 +55,38 @@ export class CatalystStaticProductServiceImpl extends BasePluginServiceImpl impl
         context?: any,
         disableMaxPagination?: boolean,
     ): Promise<ProductResultSet> {
-        let records = CatalystStaticProductData.products;
-
-        const term = filter?.term?.toLowerCase();
-        if (term) {
-            records = records.filter((p) => p.name.toLowerCase().includes(term) || p.description.toLowerCase().includes(term));
-        }
+        const base: FindOptionsWhere<CatalystStaticProductEntity> = {};
 
         const slugs = filter?.product?.slugs;
-        if (slugs?.length) {
-            records = records.filter((p) => slugs.includes(p.slug));
-        }
+        if (slugs?.length) base.slug = In(slugs);
 
         const ids = filter?.product?.ids;
-        if (ids?.length) {
-            records = records.filter((p) => ids.includes(p.id));
-        }
+        if (ids?.length) base.identifier = In(ids);
 
-        const pageSize = pagination?.pageSize ?? (records.length || 10);
+        // The search term matches name OR description, so it becomes two where branches (TypeORM ORs array entries).
+        const term = filter?.term?.trim();
+        const where: FindOptionsWhere<CatalystStaticProductEntity>[] = term
+            ? [
+                  { ...base, name: ILike(`%${term}%`) },
+                  { ...base, description: ILike(`%${term}%`) },
+              ]
+            : [base];
+
+        const { limit, offset } = this.translateLimitOffsetPagination(requestContext, pagination);
+
+        const [records, count] = await this.getProductRepository().findAndCount({
+            where,
+            order: { id: "ASC" },
+            skip: offset,
+            take: limit,
+        });
+
         const page = pagination?.page ?? 1;
-        const offset = (page - 1) * pageSize;
-        const pageCount = Math.max(1, Math.ceil(records.length / pageSize));
+        const pageCount = Math.max(1, Math.ceil(count / limit));
 
         return {
-            pagination: { page, pageSize, pageCount, resultCount: records.length, hasMorePages: page < pageCount },
-            results: records.slice(offset, offset + pageSize).map((r) => this.toProduct(r)),
+            pagination: { page, pageSize: limit, pageCount, resultCount: count, hasMorePages: page < pageCount },
+            results: records.map((r) => this.toProduct(r)),
         } as ProductResultSet;
     }
 }

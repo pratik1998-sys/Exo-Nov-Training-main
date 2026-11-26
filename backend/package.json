@@ -14,6 +14,7 @@
     "install:plugin": "node core/scripts/install-plugin.js",
     "install:feature": "node core/scripts/install-feature.js",
     "install:database": "node core/scripts/install-database.js",
+    "migrate:db": "node scripts/migrate-db.js",
     "start": "node core/scripts/start.js",
     "start:dev": "nest start --watch --entryFile main.js",
     "start:debug": "nest start --debug --watch",
