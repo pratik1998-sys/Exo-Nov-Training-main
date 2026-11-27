@@ -133,6 +133,10 @@ features:
     enabled: true
     plugins:
       -
+        id: *catalyst-static
+        consumers:
+          - id: *site-1
+      -
         id: *shopify
         consumers:
           - id: *shopify-app

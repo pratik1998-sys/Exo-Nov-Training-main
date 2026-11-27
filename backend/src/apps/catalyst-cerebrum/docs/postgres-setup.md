@@ -515,3 +515,63 @@ Consumer header: x-consumer: site-1   -> Postgres
                  x-consumer: shopify-app -> Shopify
 Backend ports  : 3100 (API), 4001 (admin)
 ```
+
+---
+
+## 10. Cart feature (catalyst-static plugin)
+
+The `cart` feature is also served by the `catalyst-static` plugin for consumer `site-1`, on the same database connection as `product`. `shopify-app` still goes to Shopify.
+
+### 10.1 Files
+
+All paths are under `src/apps/catalyst-cerebrum/plugins/catalyst-static/features/cart/`.
+
+| File | Purpose |
+|---|---|
+| `catalyst-static.cart.module.ts` | Plugin module (empty, extends `BasePluginModule`) |
+| `catalyst-static.cart.service.ts` | `CatalystStaticCartServiceImpl`, implements `CartService` |
+| `entities/catalyst-static.cart.entity.ts` | `public.cart` |
+| `entities/catalyst-static.cart-item.entity.ts` | `public.cart_item` |
+| `sql/catalyst-static.cart.sql` | DDL, idempotent, no seed data. Picked up by `yarn migrate:db` |
+
+`configuration.yaml` has `catalyst-static` added under `features[cart].plugins` for `site-1`. Both entity file names match `*catalyst-static.cart*.entity.ts`, so they are discovered and registered on the plugin's primary connection with no extra configuration.
+
+### 10.2 Tables
+
+```sql
+public.cart      (id SERIAL PK, identifier VARCHAR(64) UNIQUE, created_on, updated_on)
+public.cart_item (id SERIAL PK, cart_id -> cart.id ON DELETE CASCADE, product_identifier VARCHAR(64),
+                  quantity INTEGER CHECK (quantity > 0), UNIQUE (cart_id, product_identifier))
+```
+
+- `cart.identifier` (a UUID) is the cart id returned to clients as `Cart.id`. `cart_item.id` is the line id used for update and delete.
+- `cart_item.product_identifier` holds `public.product.identifier`. There is **no foreign key** on purpose. `yarn migrate:db` runs the SQL files in path order, so `cart/` runs before `product/` on a fresh database.
+- **Prices are not stored.** Every read prices the lines from `public.product`, so a product price change shows up in existing carts. Totals are summed in cents to avoid floating-point drift.
+
+### 10.3 What is implemented
+
+| GraphQL | Behaviour |
+|---|---|
+| `cart(id)` | Returns the cart. Unknown or missing id raises `CART_GET_FAILED` / `CART_MISSING_CART_ID` |
+| `cartItemsAdd(id?, items)` | No `id` creates a new cart. Adding a product that is already in the cart increases that line. `identifier` can be a product identifier (`p-001`) or SKU (`SNK-002`). Unknown product or quantity below 1 raises `CART_ITEMS_ADD_FAILED`, and nothing is written |
+| `cartItemsUpdate(id, items)` | Sets the quantity of a line by line id. Quantity 0 removes the line |
+| `cartItemsDelete(id, items)` | Removes lines by line id. A line that is not in this cart raises `CART_ITEMS_DELETE_FAILED` |
+| `cartDelete(id)` | Deletes the cart and its lines, and returns the cart as it was |
+
+Writes run in a single transaction. Everything else in `CartService` (`cartUpdate`, coupons, shipping, payments, precheckout, checkout, `mergeCarts`) throws `Method not implemented.`, as in the Shopify cart plugin.
+
+### 10.4 Try it
+
+```graphql
+mutation { cartItemsAdd(items: [{ identifier: "p-001", quantity: 2 }, { identifier: "SNK-002", quantity: 1 }]) {
+  id itemQuantity pricing { total { value currency } }
+  items { results { id identifier quantity product { name } pricing { price { value } amount { value } } } } } }
+```
+
+Expected: two lines, total `117.00 USD`. Pass the returned `id` as `id:` to later calls. Send no `x-consumer` header (or `site-1`).
+
+Notes:
+
+- `itemQuantity` comes back as a **string** (`"3"`). The core `Quote` model declares it without an integer field type. This is not specific to this plugin.
+- Carts are not tied to a user or session. Anyone who knows the cart id can read and change it.
+- Carts are never expired or cleaned up.
